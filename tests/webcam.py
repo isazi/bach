@@ -1,7 +1,7 @@
 import bach.webcam
 import cv2
 
-WEBCAM_ID = 2
+WEBCAM_ID = 0
 
 
 webcam = bach.webcam.Webcam(webcam_id=WEBCAM_ID, width=1920, height=1080)
