@@ -1,10 +1,10 @@
-import bach.webcam
+import bach.video
 import cv2
 
 WEBCAM_ID = 0
 
 
-webcam = bach.webcam.Webcam(webcam_id=WEBCAM_ID, width=1920, height=1080)
+webcam = bach.video.Webcam(webcam_id=WEBCAM_ID, width=1920, height=1080)
 webcam.initialize()
 
 if not webcam.ready():
