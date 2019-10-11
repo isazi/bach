@@ -1,5 +1,7 @@
 import argparse
 import cv2
+import bach.detector
+import bach.video
 
 
 def command_line():
@@ -23,12 +25,12 @@ def demo(arguments):
         cv2.rectangle(img, (x, y), (x_plus_w, y_plus_h), color, 2)
         cv2.putText(img, class_name, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    darknet = detector.Detector(arguments.config_path, arguments.config_meta, arguments.weights_path)
+    detector = bach.detector.Detector(arguments.config_path, arguments.config_meta, arguments.weights_path)
     code = detector.initialize()
     if not code:
         print("Impossible to initialize darknet.")
         exit(-1)
-    webcam = video.Webcam(webcam_id=arguments.webcam, width=arguments.width, height=arguments.height)
+    webcam = bach.video.Webcam(webcam_id=arguments.webcam, width=arguments.width, height=arguments.height)
     webcam.initialize()
     if not webcam.ready():
         print("Impossible to initialize webcam.")
