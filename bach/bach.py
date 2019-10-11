@@ -13,7 +13,7 @@ def command_line():
     parser.add_argument("-w", "--weights_path", help="File containing darknet weights", type=str, required=True)
     # Demo
     parser_demo = subparsers.add_parser("demo")
-    parser_demo.add_argument("-w", "--webcam", help="The ID of the webcam", type=int, required=True)
+    parser_demo.add_argument("--webcam", help="The ID of the webcam", type=int, required=True)
     parser_demo.add_argument("--width", help="Webcam's resolution width", type=int, default=640)
     parser_demo.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
     return parser.parse_args()
