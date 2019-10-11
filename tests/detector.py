@@ -1,7 +1,6 @@
 import cv2
 import bach.detector
 import bach.video
-import bach.darknet
 
 WEBCAM_ID = 0
 

@@ -1,5 +1,5 @@
-import bach.video
 import cv2
+import bach.video
 
 WEBCAM_ID = 0
 

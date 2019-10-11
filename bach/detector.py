@@ -1,5 +1,5 @@
 import cv2
-import bach.darknet
+from bach import darknet
 
 
 class Detector:
@@ -16,7 +16,7 @@ class Detector:
         Initialize the detector.
         """
         if self.configuration_file and self.weights_file:
-            bach.darknet.initialize(self.configuration_file, self.weights_file, self.meta_file)
+            darknet.initialize(self.configuration_file, self.weights_file, self.meta_file)
         else:
             return False
         return True
@@ -28,8 +28,8 @@ class Detector:
         """
         processed_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         cv2.resize(processed_frame,
-                   (bach.darknet.lib.network_width(bach.darknet.net_main),
-                    bach.darknet.lib.network_height(bach.darknet.net_main)),
+                   (darknet.lib.network_width(darknet.net_main),
+                    darknet.lib.network_height(darknet.net_main)),
                    interpolation=cv2.INTER_NEAREST)
         return processed_frame
 
@@ -38,9 +38,9 @@ class Detector:
         """
         Process a frame through the neural network.
         """
-        detections = bach.darknet.detect(bach.darknet.net_main,
-                                         bach.darknet.meta_main,
-                                         frame,
-                                         threshold,
-                                         threshold)
+        detections = darknet.detect(darknet.net_main,
+                                    darknet.meta_main,
+                                    frame,
+                                    threshold,
+                                    threshold)
         return detections

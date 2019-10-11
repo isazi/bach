@@ -1,7 +1,5 @@
 import argparse
 import cv2
-import video
-import detector
 
 
 def command_line():
