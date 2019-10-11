@@ -16,6 +16,7 @@ def command_line():
     parser_demo.add_argument("--webcam", help="The ID of the webcam", type=int, required=True)
     parser_demo.add_argument("--width", help="Webcam's resolution width", type=int, default=640)
     parser_demo.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
+    parser_demo.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
     return parser.parse_args()
 
 
@@ -41,8 +42,8 @@ def demo(arguments):
         except ValueError as err:
             print("Error: ".format(str(err)))
             exit(-1)
-        processed_frame = darknet.preprocess_frame(frame)
-        detections = darknet.process_frame(processed_frame, threshold=0.01)
+        processed_frame = detector.preprocess_frame(frame)
+        detections = detector.process_frame(processed_frame, threshold=arguments.threshold)
         for detection in detections:
             draw_bounding_box(frame,
                               detection[0],
