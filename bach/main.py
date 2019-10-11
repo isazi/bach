@@ -23,7 +23,8 @@ def command_line():
 def demo(arguments):
     def draw_bounding_box(img, class_name, x, y, x_plus_w, y_plus_h):
         color = 15
-        cv2.rectangle(img, (x, y), (x_plus_w, y_plus_h), color, 2)
+        # cv2.rectangle(img, (x, y), (x_plus_w, y_plus_h), color, 2)
+        cv2.rectangle(img, (x, y - 25), (x + 150, y), color, cv2.FILLED)
         cv2.putText(img, class_name, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
     detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
