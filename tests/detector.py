@@ -32,7 +32,6 @@ while True:
     processed_frame = detector.preprocess_frame(frame)
     detections = detector.process_frame(processed_frame, threshold=0.01)
     for detection in detections:
-        print(detection)
         draw_bounding_box(frame,
                           detection[0],
                           int(detection[2][0] - detection[2][2]/2),
