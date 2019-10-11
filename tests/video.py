@@ -11,7 +11,7 @@ if not webcam.ready():
     exit(-1)
 
 print("Webcam")
-print("\tResolution: {}x{}".format(webcam.get_width(), webcam.get_height()))
+print("\tResolution: {}x{}".format(webcam.width, webcam.height))
 
 while True:
     try:

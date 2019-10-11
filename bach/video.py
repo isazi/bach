@@ -1,53 +1,71 @@
 import cv2
 
 
-class Webcam:
-    def __init__(self, webcam_id=0, width=640, height=480):
+class Video:
+    def __init__(self):
         """
         Default constructor.
         """
-        self.webcam_id = webcam_id
-        self.width = width
-        self.height = height
-        self.webcam = None
+        self.video = None
 
     def __del__(self):
         """
         Default destructor.
         """
-        self.webcam.release()
+        if self.video:
+            self.video.release()
+
+    def ready(self):
+        """
+        Check if the video is ready.
+        """
+        if self.video:
+            return self.video.isOpened()
+
+    def get_frame(self, gray=False):
+        """
+        Return the current frame from the video.
+        """
+        if self.video:
+            code, frame = self.video.read()
+            if not code:
+                raise ValueError("Impossible to retrieve current frame.")
+            if gray:
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            return frame
+
+
+class Webcam(Video):
+    def __init__(self, webcam_id=0, width=640, height=480):
+        """
+        Default constructor.
+        """
+        super().__init__()
+        self.webcam_id = webcam_id
+        self.width = width
+        self.height = height
 
     def initialize(self):
         """
         Initialize capture device.
         """
-        self.webcam = cv2.VideoCapture(self.webcam_id)
-        self.webcam.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
-        self.webcam.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+        self.video = cv2.VideoCapture(self.webcam_id)
+        self.video.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
+        self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
 
-    def ready(self):
-        """
-        Check if the webcam is ready to stream.
-        """
-        return self.webcam.isOpened()
 
-    def get_width(self):
+class VideoFile(Video):
+    def __init__(self):
         """
-        Retrieve the image width.
+        Default constructor.
         """
-        return self.width
+        super().__init__()
+        self.filename = None
+        self.width = 0
+        self.height = 0
 
-    def get_height(self):
-        """Retrieve the image height."""
-        return self.height
-
-    def get_frame(self, gray=False):
-        """
-        Return the current frame from the webcam.
-        """
-        code, frame = self.webcam.read()
-        if not code:
-            raise ValueError("Impossible to retrieve the frame.")
-        if gray:
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        return frame
+    def initialize(self):
+        if self.filename:
+            self.video = cv2.VideoCapture(self.filename)
+            self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
+            self.height = self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
