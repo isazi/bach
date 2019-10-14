@@ -19,6 +19,7 @@ def command_line():
     parser_lwd.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
     parser_lwd.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
     parser_lwd.add_argument("--gray", help="Convert input to grayscale", action="store_true")
+    parser_lwd.add_argument("--fps", help="Set the frames per second", type=int, default=25)
     parser_lwd.add_argument("--output", help="File where to save the output video", type=str)
     # Recorded video detection
     parser_rvd = subparsers.add_parser("recorded_video_detection")
@@ -38,10 +39,13 @@ def video_detection(arguments, read_file=False):
     if read_file:
         video = bach.video.VideoFile(arguments.file)
     else:
-        video = bach.video.Webcam(webcam_id=arguments.webcam, width=arguments.width, height=arguments.height)
+        video = bach.video.Webcam(webcam_id=arguments.webcam,
+                                  width=arguments.width,
+                                  height=arguments.height,
+                                  fps=arguments.fps)
     video.initialize()
     if arguments.output:
-        output = bach.video.VideoWriter(arguments.output, width=video.width, height=video.height)
+        output = bach.video.VideoWriter(arguments.output, width=video.width, height=video.height, fps=video.fps)
         output.initialize()
     if not video.ready():
         print("Impossible to open video source.")
