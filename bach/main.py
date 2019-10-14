@@ -95,7 +95,7 @@ def __main__():
     if arguments.action == "detection":
         video_detection(arguments)
     elif arguments.action == "frame_extraction":
-        frame_extraction()
+        frame_extraction(arguments)
     return 0
 
 
