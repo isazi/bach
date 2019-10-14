@@ -41,7 +41,7 @@ def video_detection(arguments, read_file=False):
         video = bach.video.Webcam(webcam_id=arguments.webcam, width=arguments.width, height=arguments.height)
     video.initialize()
     if arguments.output:
-        output = bach.video.VideoWriter(arguments.output, width=arguments.width, height=arguments.height)
+        output = bach.video.VideoWriter(arguments.output, width=video.width, height=video.height)
         output.initialize()
     if not video.ready():
         print("Impossible to open video source.")
