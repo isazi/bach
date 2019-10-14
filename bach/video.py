@@ -65,7 +65,38 @@ class VideoFile(Video):
         self.height = 0
 
     def initialize(self):
+        """
+        Open video file.
+        """
         if self.filename:
             self.video = cv2.VideoCapture(self.filename)
             self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
             self.height = self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+class VideoWriter():
+    def __init__(self, file, width=640, height=480):
+        """
+        Default constructor.
+        """
+        self.file = file
+        self.width = width
+        self.height = height
+        self.out = None
+
+    def __del__(self):
+        """
+        Default destructor.
+        """
+        self.file.release()
+
+    def initialize(self):
+        """
+        Open output file and initialize video codec.
+        """
+        self.out = cv2.VideoWriter(self.file, cv2.VideoWriter_fourcc("M", "P", "4", "2"), 25, (self.width, self.height))
+
+    def write(self, frame):
+        """
+        Save a frame in the file.
+        """
+        self.out.write(frame)
