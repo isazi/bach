@@ -7,36 +7,37 @@ import bach.graphics
 
 def command_line():
     parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers(dest="action")
-    # Required files for darknet
-    parser.add_argument("-c", "--config_path", help="File containing darknet configuration", type=str, required=True)
-    parser.add_argument("-m", "--meta_path", help="File containing darknet metadata", type=str, required=True)
-    parser.add_argument("-w", "--weights_path", help="File containing darknet weights", type=str, required=True)
-    # Live webcam detection
-    parser_lwd = subparsers.add_parser("live_webcam_detection")
-    parser_lwd.add_argument("--webcam", help="The ID of the webcam", type=int, required=True)
-    parser_lwd.add_argument("--width", help="Webcam's resolution width", type=int, default=640)
-    parser_lwd.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
-    parser_lwd.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
-    parser_lwd.add_argument("--gray", help="Convert input to grayscale", action="store_true")
-    parser_lwd.add_argument("--fps", help="Set the frames per second", type=int, default=25)
-    parser_lwd.add_argument("--output", help="File where to save the output video", type=str)
-    # Recorded video detection
-    parser_rvd = subparsers.add_parser("recorded_video_detection")
-    parser_rvd.add_argument("--file", help="The file containing the video", type=str, required=True)
-    parser_rvd.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
-    parser_rvd.add_argument("--gray", help="Convert input to grayscale", action="store_true")
-    parser_rvd.add_argument("--output", help="File where to save the output video", type=str)
+    # Devices
+    parser.add_argument("--webcam", help="The ID of the webcam", type=int)
+    parser.add_argument("--file", help="The file containing the video", type=str)
+    parser.add_argument("--width", help="Webcam's resolution width", type=int, default=640)
+    parser.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
+    parser.add_argument("--fps", help="Set the frames per second", type=int, default=25)
+    parser.add_argument("--output", help="File where to save the output video", type=str)
+    # Darknet
+    parser.add_argument("-c", "--config_path", help="File containing darknet configuration", type=str)
+    parser.add_argument("-m", "--meta_path", help="File containing darknet metadata", type=str)
+    parser.add_argument("-w", "--weights_path", help="File containing darknet weights", type=str)
+    # Actions
+    parser.add_argument("--action",
+                        help="The action to perform",
+                        choices=["detection", "frame_extraction"],
+                        required=True)
+    # Detection
+    parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
+    parser.add_argument("--gray", help="Convert input to grayscale", action="store_true")
+    # Frame extraction
+    parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
     return parser.parse_args()
 
 
-def video_detection(arguments, read_file=False):
+def video_detection(arguments):
     detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
     code = detector.initialize()
     if not code:
         print("Impossible to initialize darknet.")
         exit(-1)
-    if read_file:
+    if arguments.file:
         video = bach.video.VideoFile(arguments.file)
     else:
         video = bach.video.Webcam(webcam_id=arguments.webcam,
@@ -53,7 +54,7 @@ def video_detection(arguments, read_file=False):
     if not video.ready():
         print("Impossible to open video source.")
         exit(-1)
-    while True:
+    while video.ready():
         try:
             frame = video.get_frame(gray=arguments.gray)
         except ValueError as err:
@@ -75,12 +76,27 @@ def video_detection(arguments, read_file=False):
     exit(0)
 
 
+def frame_extraction(arguments):
+    video = bach.video.VideoFile(arguments.file)
+    frame_counter = 0
+    while video.ready():
+        try:
+            frame = video.get_frame(gray=arguments.gray)
+        except ValueError as err:
+            print("Error: ".format(str(err)))
+            exit(-1)
+        if frame_counter % arguments.reduction == 0:
+            cv2.imwrite("{}_{}.png".format(arguments.output, frame_counter), frame)
+        frame_counter = frame_counter + 1
+
+
 def __main__():
     arguments = command_line()
-    if arguments.action == "live_webcam_detection":
+    if arguments.action == "detection":
         video_detection(arguments)
-    elif arguments.action == "recorded_video_detection":
-        video_detection(arguments, read_file=True)
+    elif arguments.action == "frame_extraction":
+        frame_extraction()
+    return 0
 
 
 __main__()
