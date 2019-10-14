@@ -2,6 +2,7 @@ import argparse
 import cv2
 import bach.detector
 import bach.video
+import bach.graphics
 
 
 def command_line():
@@ -21,12 +22,6 @@ def command_line():
 
 
 def demo(arguments):
-    def draw_bounding_box(img, class_name, x, y, x_plus_w, y_plus_h):
-        color = 15
-        # cv2.rectangle(img, (x, y), (x_plus_w, y_plus_h), color, 2)
-        cv2.rectangle(img, (x, y - 25), (x + 150, y), color, cv2.FILLED)
-        cv2.putText(img, class_name, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-
     detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
     code = detector.initialize()
     if not code:
@@ -46,12 +41,10 @@ def demo(arguments):
         processed_frame = detector.preprocess_frame(frame)
         detections = detector.process_frame(processed_frame, threshold=arguments.threshold)
         for detection in detections:
-            draw_bounding_box(frame,
-                              detection[0],
-                              int(detection[2][0] - detection[2][2] / 2),
-                              int(detection[2][1] - detection[2][3] / 2),
-                              int(detection[2][3]),
-                              int(detection[2][2]))
+            bach.graphics.draw_bounding_box(frame,
+                                            detection[0],
+                                            0,
+                                            detection[2][0], detection[2][1], detection[2][2], detection[2][3])
         cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
