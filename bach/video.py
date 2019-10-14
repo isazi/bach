@@ -36,7 +36,7 @@ class Video:
 
 
 class Webcam(Video):
-    def __init__(self, webcam_id=0, width=640, height=480):
+    def __init__(self, webcam_id=0, width=640, height=480, fps=25):
         """
         Default constructor.
         """
@@ -44,6 +44,7 @@ class Webcam(Video):
         self.webcam_id = webcam_id
         self.width = width
         self.height = height
+        self.fps = fps
 
     def initialize(self):
         """
@@ -52,6 +53,7 @@ class Webcam(Video):
         self.video = cv2.VideoCapture(self.webcam_id)
         self.video.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+        self.video.set(cv2.CAP_PROP_FPS, self.fps)
 
 
 class VideoFile(Video):
@@ -63,6 +65,7 @@ class VideoFile(Video):
         self.filename = file
         self.width = 0
         self.height = 0
+        self.fps = 0
 
     def initialize(self):
         """
@@ -72,16 +75,18 @@ class VideoFile(Video):
             self.video = cv2.VideoCapture(self.filename)
             self.width = int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
             self.height = int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            self.fps = int(self.video.get(cv2.CAP_PROP_FPS))
 
 
 class VideoWriter:
-    def __init__(self, file, width=640, height=480):
+    def __init__(self, file, width=640, height=480, fps=25):
         """
         Default constructor.
         """
         self.file = file
         self.width = width
         self.height = height
+        self.fps = fps
         self.out = None
 
     def __del__(self):
@@ -95,7 +100,10 @@ class VideoWriter:
         """
         Open output file and initialize video codec.
         """
-        self.out = cv2.VideoWriter(self.file, cv2.VideoWriter_fourcc("m", "p", "4", "v"), 25, (self.width, self.height))
+        self.out = cv2.VideoWriter(self.file,
+                                   cv2.VideoWriter_fourcc("m", "p", "4", "v"),
+                                   self.fps,
+                                   (self.width, self.height))
 
     def write(self, frame):
         """
