@@ -78,6 +78,9 @@ def video_detection(arguments):
 
 def frame_extraction(arguments):
     video = bach.video.VideoFile(arguments.file)
+    if not video.ready():
+        print("Impossible to open video source.")
+        exit(-1)
     frame_counter = 0
     while video.ready():
         try:
