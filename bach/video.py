@@ -95,7 +95,7 @@ class VideoWriter:
         """
         Open output file and initialize video codec.
         """
-        self.out = cv2.VideoWriter(self.file, cv2.VideoWriter_fourcc("M", "P", "4", "V"), 25, (self.width, self.height))
+        self.out = cv2.VideoWriter(self.file, cv2.VideoWriter_fourcc("m", "p", "4", "v"), 25, (self.width, self.height))
 
     def write(self, frame):
         """
