@@ -70,8 +70,8 @@ class VideoFile(Video):
         """
         if self.filename:
             self.video = cv2.VideoCapture(self.filename)
-            self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
-            self.height = self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
+            self.width = int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH))
+            self.height = int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 
 class VideoWriter:
