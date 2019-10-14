@@ -7,6 +7,11 @@ import bach.graphics
 
 def command_line():
     parser = argparse.ArgumentParser()
+    # Actions
+    parser.add_argument("--action",
+                        help="The action to perform",
+                        choices=["detection", "frame_extraction"],
+                        required=True)
     # Devices
     parser.add_argument("--webcam", help="The ID of the webcam", type=int)
     parser.add_argument("--file", help="The file containing the video", type=str)
@@ -18,11 +23,6 @@ def command_line():
     parser.add_argument("-c", "--config_path", help="File containing darknet configuration", type=str)
     parser.add_argument("-m", "--meta_path", help="File containing darknet metadata", type=str)
     parser.add_argument("-w", "--weights_path", help="File containing darknet weights", type=str)
-    # Actions
-    parser.add_argument("--action",
-                        help="The action to perform",
-                        choices=["detection", "frame_extraction"],
-                        required=True)
     # Detection
     parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
     parser.add_argument("--gray", help="Convert input to grayscale", action="store_true")
