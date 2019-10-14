@@ -63,8 +63,10 @@ def demo(arguments, read_file=False):
 
 def __main__():
     arguments = command_line()
-    if arguments.action == "demo":
+    if arguments.action == "demo-webcam":
         demo(arguments)
+    elif arguments.action == "demo-file":
+        demo(arguments, read_file=True)
 
 
 __main__()
