@@ -55,13 +55,13 @@ def video_detection(arguments, read_file=False):
         processed_frame = detector.preprocess_frame(frame)
         detections = detector.process_frame(processed_frame, threshold=arguments.threshold)
         for detection in detections:
-            bach.graphics.draw_bounding_box(frame,
+            bach.graphics.draw_bounding_box(processed_frame,
                                             detection[0],
                                             0,
                                             detection[2][0], detection[2][1], detection[2][2], detection[2][3])
-        cv2.imshow('frame', frame)
         if arguments.output:
-            output.write(frame)
+            output.write(processed_frame)
+        cv2.imshow('frame', processed_frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cv2.destroyAllWindows()
