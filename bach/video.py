@@ -74,7 +74,7 @@ class VideoFile(Video):
             self.height = self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
 
-class VideoWriter():
+class VideoWriter:
     def __init__(self, file, width=640, height=480):
         """
         Default constructor.
