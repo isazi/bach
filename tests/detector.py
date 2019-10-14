@@ -1,14 +1,9 @@
 import cv2
 import bach.detector
 import bach.video
+import bach.graphics
 
 WEBCAM_ID = 0
-
-
-def draw_bounding_box(img, class_name, x, y, x_plus_w, y_plus_h):
-    COLOR=15
-    cv2.rectangle(img, (x, y), (x_plus_w, y_plus_h), COLOR, 2)
-    cv2.putText(img, class_name, (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLOR, 2)
 
 
 detector = bach.detector.Detector("/home/alessio/Downloads/2019-10-10/yolo-ants.cfg",
@@ -31,12 +26,10 @@ while True:
     processed_frame = detector.preprocess_frame(frame)
     detections = detector.process_frame(processed_frame, threshold=0.01)
     for detection in detections:
-        draw_bounding_box(frame,
-                          detection[0],
-                          int(detection[2][0] - detection[2][2]/2),
-                          int(detection[2][1] - detection[2][3]/2),
-                          int(detection[2][3]),
-                          int(detection[2][2]))
+        bach.graphics.draw_bounding_box(frame,
+                                        detection[0],
+                                        0,
+                                        detection[2][0], detection[2][1], detection[2][2], detection[2][3])
     cv2.imshow('frame', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
