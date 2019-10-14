@@ -55,12 +55,12 @@ class Webcam(Video):
 
 
 class VideoFile(Video):
-    def __init__(self):
+    def __init__(self, file):
         """
         Default constructor.
         """
         super().__init__()
-        self.filename = None
+        self.filename = file
         self.width = 0
         self.height = 0
 
