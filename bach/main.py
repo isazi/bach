@@ -18,6 +18,7 @@ def command_line():
     parser_demo.add_argument("--width", help="Webcam's resolution width", type=int, default=640)
     parser_demo.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
     parser_demo.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
+    parser_demo.add_argument("--gray", help="Convert input to grayscale", type=bool, action="store_true")
     return parser.parse_args()
 
 
@@ -34,7 +35,7 @@ def demo(arguments):
         exit(-1)
     while True:
         try:
-            frame = webcam.get_frame()
+            frame = webcam.get_frame(gray=arguments.gray)
         except ValueError as err:
             print("Error: ".format(str(err)))
             exit(-1)
