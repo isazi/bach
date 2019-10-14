@@ -73,6 +73,7 @@ class VideoFile(Video):
             self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
             self.height = self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
+
 class VideoWriter():
     def __init__(self, file, width=640, height=480):
         """
