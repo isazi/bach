@@ -28,7 +28,7 @@ while True:
     for detection in detections:
         bach.graphics.draw_bounding_box(frame,
                                         detection[0],
-                                        0,
+                                        detector.colors[detection[0]],
                                         detection[2][0], detection[2][1], detection[2][2], detection[2][3])
     cv2.imshow('frame', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):

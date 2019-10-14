@@ -64,7 +64,7 @@ def video_detection(arguments, read_file=False):
         for detection in detections:
             bach.graphics.draw_bounding_box(processed_frame,
                                             detection[0],
-                                            0,
+                                            detector.colors[detection[0]],
                                             detection[2][0], detection[2][1], detection[2][2], detection[2][3])
         if arguments.output:
             output.write(processed_frame)

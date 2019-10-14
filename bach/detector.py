@@ -1,4 +1,5 @@
 import cv2
+import numpy
 from bach import darknet
 
 
@@ -10,6 +11,7 @@ class Detector:
         self.configuration_file = configuration
         self.meta_file = meta
         self.weights_file = weights
+        self.colors = dict()
 
     def initialize(self):
         """
@@ -19,6 +21,8 @@ class Detector:
             darknet.initialize(self.configuration_file, self.weights_file, self.meta_file)
         else:
             return False
+        for name in darknet.alt_names:
+            self.colors[name] = numpy.random.randint(0, 255)
         return True
 
     @staticmethod
