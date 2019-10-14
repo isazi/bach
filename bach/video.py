@@ -87,7 +87,8 @@ class VideoWriter():
         """
         Default destructor.
         """
-        self.file.release()
+        if self.out:
+            self.out.release()
 
     def initialize(self):
         """
