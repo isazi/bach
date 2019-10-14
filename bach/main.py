@@ -68,7 +68,7 @@ def video_detection(arguments, read_file=False):
                                             detection[2][0], detection[2][1], detection[2][2], detection[2][3])
         if arguments.output:
             output.write(processed_frame)
-        cv2.imshow('frame', processed_frame)
+        cv2.imshow("BACH", processed_frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cv2.destroyAllWindows()
