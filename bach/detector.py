@@ -22,7 +22,7 @@ class Detector:
         else:
             return False
         for name in darknet.alt_names:
-            self.colors[name] = numpy.random.randint(0, 255)
+            self.colors[name] = numpy.random.randint(0, 255, 3)
         return True
 
     @staticmethod
