@@ -22,7 +22,10 @@ class Detector:
         else:
             return False
         for name in darknet.alt_names:
-            self.colors[name] = numpy.random.randint(0, 255, 3)
+            # The color is in BGR format
+            self.colors[name] = (numpy.random.randint(0, 255),
+                                 numpy.random.randint(0, 255),
+                                 numpy.random.randint(0, 255))
         return True
 
     @staticmethod
