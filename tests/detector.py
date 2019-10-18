@@ -24,7 +24,7 @@ while webcam.ready():
         print("Error: ".format(str(err)))
         break
     processed_frame = detector.preprocess_frame(frame)
-    detections = detector.process_frame(processed_frame, threshold=0.25)
+    detections = detector.detect_objects(processed_frame, threshold=0.25)
     for detection in detections:
         bach.graphics.draw_bounding_box(processed_frame,
                                         detection[0],

@@ -48,7 +48,7 @@ class Detector:
         return processed_frame
 
     @staticmethod
-    def process_frame(frame, threshold=0.5):
+    def detect_objects(frame, threshold=0.5):
         """
         Process a frame through the neural network.
         """

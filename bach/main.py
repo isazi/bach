@@ -61,7 +61,7 @@ def video_detection(arguments):
             print("Error: ".format(str(err)))
             exit(-1)
         processed_frame = detector.preprocess_frame(frame)
-        detections = detector.process_frame(processed_frame, threshold=arguments.threshold)
+        detections = detector.detect_objects(processed_frame, threshold=arguments.threshold)
         for detection in detections:
             bach.graphics.draw_bounding_box(processed_frame,
                                             detection[0],
