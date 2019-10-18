@@ -31,7 +31,7 @@ class Detector:
                                  numpy.random.randint(0, 255),
                                  numpy.random.randint(0, 255))
         # Initialize ArUco
-        self.aruco_dictionary = aruco.Dictionary_get(aruco.DICT_ARUCO_ORIGINAL)
+        self.aruco_dictionary = aruco.Dictionary_get(aruco.DICT_4X4_50)
         self.aruco_parameters = aruco.DetectorParameters_create()
         return True
 
