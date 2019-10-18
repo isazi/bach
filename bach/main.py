@@ -62,13 +62,13 @@ def video_detection(arguments):
             print("Error: ".format(str(err)))
             break
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
+        aruco_boxes, aruco_ids = detector.detect_markers(frame)
         for detection in detections:
             bach.graphics.draw_bounding_box(frame,
                                             detection[0],
                                             detector.colors[detection[0]],
                                             detection[2][0], detection[2][1], detection[2][2], detection[2][3])
-        aruco_boxes, aruco_ids = detector.detect_markers(frame)
-        frame = cv2.aruco.drawDetectedMarkers(frame.copy(), aruco_boxes, aruco_ids)
+        frame = cv2.aruco.drawDetectedMarkers(frame, aruco_boxes, aruco_ids)
         if arguments.output:
             output.write(frame)
         cv2.imshow("BACH", frame)
