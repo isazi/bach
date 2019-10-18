@@ -61,16 +61,15 @@ def video_detection(arguments):
         except ValueError as err:
             print("Error: ".format(str(err)))
             break
-        processed_frame = detector.preprocess_frame(frame)
-        detections = detector.detect_objects(processed_frame, threshold=arguments.threshold)
+        detections = detector.detect_objects(frame, threshold=arguments.threshold)
         for detection in detections:
-            bach.graphics.draw_bounding_box(processed_frame,
+            bach.graphics.draw_bounding_box(frame,
                                             detection[0],
                                             detector.colors[detection[0]],
                                             detection[2][0], detection[2][1], detection[2][2], detection[2][3])
         if arguments.output:
-            output.write(processed_frame)
-        cv2.imshow("BACH", processed_frame)
+            output.write(frame)
+        cv2.imshow("BACH", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cv2.destroyAllWindows()
