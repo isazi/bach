@@ -33,11 +33,11 @@ class Detector:
         """
         Preprocess a frame before detection.
         """
-        processed_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        cv2.resize(processed_frame,
-                   (darknet.lib.network_width(darknet.net_main),
-                    darknet.lib.network_height(darknet.net_main)),
-                   interpolation=cv2.INTER_NEAREST)
+        processed_frame = frame.copy()
+        processed_frame = cv2.resize(processed_frame,
+                                     (darknet.lib.network_width(darknet.net_main),
+                                      darknet.lib.network_height(darknet.net_main)),
+                                     interpolation=cv2.INTER_NEAREST)
         return processed_frame
 
     @staticmethod
