@@ -16,7 +16,7 @@ while webcam.ready():
         frame = webcam.get_frame()
     except ValueError as err:
         print("Error: ".format(str(err)))
-        exit(-1)
+        break
     cv2.imshow('frame', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
