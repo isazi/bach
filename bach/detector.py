@@ -1,4 +1,5 @@
 import cv2
+from cv2 import aruco
 import numpy
 from bach import darknet
 
@@ -12,11 +13,14 @@ class Detector:
         self.meta_file = meta
         self.weights_file = weights
         self.colors = dict()
+        self.aruco_dictionary = None
+        self.aruco_parameters = None
 
     def initialize(self):
         """
         Initialize the detector.
         """
+        # Initialize Darknet
         if self.configuration_file and self.weights_file:
             darknet.initialize(self.configuration_file, self.weights_file, self.meta_file)
         else:
@@ -26,6 +30,9 @@ class Detector:
             self.colors[name] = (numpy.random.randint(0, 255),
                                  numpy.random.randint(0, 255),
                                  numpy.random.randint(0, 255))
+        # Initialize ArUco
+        self.aruco_dictionary = aruco.Dictionary_get(aruco.DICT_ARUCO_ORIGINAL)
+        self.aruco_parameters = aruco.DetectorParameters_create()
         return True
 
     @staticmethod
