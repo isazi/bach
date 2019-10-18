@@ -50,7 +50,7 @@ class Detector:
     @staticmethod
     def detect_objects(frame, threshold=0.5):
         """
-        Process a frame through the neural network.
+        Process a frame through the neural network and return detected objects.
         """
         detections = darknet.detect(darknet.net_main,
                                     darknet.meta_main,
@@ -58,3 +58,10 @@ class Detector:
                                     threshold,
                                     threshold)
         return detections
+
+    def detect_markers(self, frame):
+        """
+         Detect ArUco markers in a frame.
+        """
+        corners, ids, _ = aruco.detectMarkers(frame, self.aruco_dictionary, parameters=self.aruco_parameters)
+        return corners, ids
