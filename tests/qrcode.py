@@ -21,6 +21,8 @@ while webcam.ready():
     corners, ids, rejectedImgPoints = aruco.detectMarkers(frame, aruco_dict, parameters=parameters)
     if ids is not None:
         print("Detections: {}".format(len(ids)))
+        for detection in ids:
+            print("\tID: {}".format(detection))
     frame_markers = aruco.drawDetectedMarkers(frame.copy(), corners, ids)
     cv2.imshow('frame', frame_markers)
     if cv2.waitKey(1) & 0xFF == ord('q'):
