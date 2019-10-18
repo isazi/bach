@@ -57,7 +57,7 @@ def video_detection(arguments):
         exit(-1)
     while video.ready():
         try:
-            frame = video.get_frame(gray=arguments.gray)
+            frame = video.get_frame()
         except ValueError as err:
             print("Error: ".format(str(err)))
             break
