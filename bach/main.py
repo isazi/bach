@@ -45,6 +45,7 @@ def video_detection(arguments):
                                   height=arguments.height,
                                   fps=arguments.fps)
     video.initialize()
+    output = None
     if arguments.output:
         output = bach.video.VideoWriter("{}.mp4".format(arguments.output),
                                         width=video.width,
@@ -59,7 +60,7 @@ def video_detection(arguments):
             frame = video.get_frame(gray=arguments.gray)
         except ValueError as err:
             print("Error: ".format(str(err)))
-            exit(-1)
+            break
         processed_frame = detector.preprocess_frame(frame)
         detections = detector.detect_objects(processed_frame, threshold=arguments.threshold)
         for detection in detections:
@@ -88,7 +89,7 @@ def frame_extraction(arguments):
             frame = video.get_frame(gray=arguments.gray)
         except ValueError as err:
             print("Error: ".format(str(err)))
-            exit(-1)
+            break
         if frame_counter % arguments.reduction == 0:
             cv2.imwrite("{}_{}.png".format(arguments.output, frame_counter), frame)
         frame_counter = frame_counter + 1
