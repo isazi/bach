@@ -27,7 +27,6 @@ def command_line():
     parser.add_argument("-w", "--weights_path", help="File containing darknet weights", type=str)
     # Detection
     parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
-    parser.add_argument("--gray", help="Convert input to grayscale", action="store_true")
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
     return parser.parse_args()
@@ -91,7 +90,7 @@ def frame_extraction(arguments):
     frame_counter = 0
     while video.ready():
         try:
-            frame = video.get_frame(gray=arguments.gray)
+            frame = video.get_frame()
         except ValueError as err:
             print("Error: ".format(str(err)))
             break
