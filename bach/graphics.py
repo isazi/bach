@@ -5,9 +5,7 @@ def draw_bounding_box(image, entity, color):
     """
     Draw a bounding box around an object.
     """
-    top_left = (int(entity.position.x - (entity.width / 2)), int(entity.position.y - (entity.height / 2)))
-    bottom_right = (int(entity.position.x + (entity.width / 2)), int(entity.position.y + (entity.height / 2)))
-    cv2.rectangle(image, top_left, bottom_right, color, 2)
+    cv2.rectangle(image, entity.top_left(), entity.bottom_right(), color, 2)
     label_point = (int(entity.position.x - (entity.width / 2)), int(entity.position.y - (entity.height / 2)) - 10)
     cv2.putText(image, entity.label, label_point, cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
     return image
