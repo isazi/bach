@@ -23,14 +23,15 @@ while webcam.ready():
     except ValueError as err:
         print("Error: ".format(str(err)))
         break
-    processed_frame = detector.preprocess_frame(frame)
-    detections = detector.detect_objects(processed_frame, threshold=0.25)
+    detections = detector.detect_objects(frame, threshold=0.25)
+    aruco_boxes, aruco_ids = detector.detect_markers(frame)
     for detection in detections:
-        bach.graphics.draw_bounding_box(processed_frame,
+        bach.graphics.draw_bounding_box(frame,
                                         detection[0],
                                         detector.colors[detection[0]],
                                         detection[2][0], detection[2][1], detection[2][2], detection[2][3])
-    cv2.imshow('frame', processed_frame)
+    frame = cv2.aruco.drawDetectedMarkers(frame, aruco_boxes, aruco_ids)
+    cv2.imshow('Detector Test', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
