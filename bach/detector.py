@@ -33,6 +33,15 @@ class Detector:
         # Initialize ArUco
         self.aruco_dictionary = aruco.Dictionary_get(aruco.DICT_4X4_50)
         self.aruco_parameters = aruco.DetectorParameters_create()
+        self.aruco_parameters.adaptiveThreshWinSizeMin = 3
+        self.aruco_parameters.adaptiveThreshWinSizeMax = 60
+        self.aruco_parameters.adaptiveThreshWinSizeStep = 3
+        self.aruco_parameters.minMarkerPerimeterRate = 0.004
+        self.aruco_parameters.maxMarkerPerimeterRate = 0.032
+        self.aruco_parameters.markerBorderBits = 1
+        self.aruco_parameters.maxErroneousBitsInBorderRate = 0.40
+        self.aruco_parameters.errorCorrectionRate = 0.9
+        self.aruco_parameters.detectInvertedMarker = False
         return True
 
     @staticmethod
