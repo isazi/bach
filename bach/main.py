@@ -3,6 +3,8 @@ import cv2
 import bach.detector
 import bach.video
 import bach.graphics
+import bach.geometry
+import bach.objects
 
 
 def command_line():
@@ -63,12 +65,16 @@ def video_detection(arguments):
             break
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         aruco_boxes, aruco_ids = detector.detect_markers(frame)
+        aruco_points = list()
+        for aruco_box in aruco_boxes:
+            aruco_points.append(bach.geometry.Point(
+                (aruco_box[0][0] + aruco_box[1][0] + aruco_box[2][0] + aruco_box[3][0]) / 4,
+                (aruco_box[0][1] + aruco_box[1][1] + aruco_box[2][1] + aruco_box[3][1]) / 4,
+            ))
         for detection in detections:
-            bach.graphics.draw_bounding_box(frame,
-                                            detection[0],
-                                            detector.colors[detection[0]],
-                                            detection[2][0], detection[2][1], detection[2][2], detection[2][3])
-        frame = cv2.aruco.drawDetectedMarkers(frame, aruco_boxes, aruco_ids)
+            entity = bach.objects.Entity(label=detection[0], width=detection[2][2], height=detection[2][3])
+            entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
+            bach.graphics.draw_bounding_box(frame, entity, detector.colors[detection[0]])
         if arguments.output:
             output.write(frame)
         cv2.imshow("BACH", frame)
