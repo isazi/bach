@@ -2,6 +2,7 @@ import cv2
 from cv2 import aruco
 import numpy
 from bach import darknet
+import bach.geometry
 
 
 class Detector:
@@ -73,4 +74,14 @@ class Detector:
          Detect ArUco markers in a frame.
         """
         corners, ids, _ = aruco.detectMarkers(frame, self.aruco_dictionary, parameters=self.aruco_parameters)
-        return corners, ids
+        markers = list()
+        if ids is not None:
+            for index in range(0, len(ids)):
+                x = 0
+                y = 0
+                for point in corners[index][0]:
+                    x = x + point[0]
+                    y = y + point[1]
+                point = bach.geometry.Point(x / 4, y / 4)
+                markers[ids[index]] = point
+        return markers
