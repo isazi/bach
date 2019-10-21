@@ -74,7 +74,7 @@ class Detector:
          Detect ArUco markers in a frame.
         """
         corners, ids, _ = aruco.detectMarkers(frame, self.aruco_dictionary, parameters=self.aruco_parameters)
-        markers = list()
+        markers = dict()
         if ids is not None:
             for index in range(0, len(ids)):
                 x = 0
@@ -83,5 +83,5 @@ class Detector:
                     x = x + point[0]
                     y = y + point[1]
                 point = bach.geometry.Point(x / 4, y / 4)
-                markers[ids[index]] = point
+                markers[ids[index][0]] = point
         return markers
