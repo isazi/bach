@@ -68,6 +68,10 @@ def video_detection(arguments):
         for detection in detections:
             entity = bach.objects.Entity(label=detection[0], width=detection[2][2], height=detection[2][3])
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
+            for label, point in aruco_markers.items():
+                if entity.contains(point):
+                    entity.label = "{}: {}".format(entity.label, label)
+                    break
             bach.graphics.draw_bounding_box(frame, entity, detector.colors[detection[0]])
         if arguments.output:
             output.write(frame)
