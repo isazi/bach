@@ -21,9 +21,9 @@ class Entity:
         """
         return int(self.position.x + (self.width / 2)), int(self.position.y + (self.height / 2))
 
-    def is_inside(self, point):
+    def contains(self, point):
         """
-        Check if a point is inside the entity.
+        Check if the point is contained within the entity.
         """
         top_left = self.top_left()
         bottom_right = self.bottom_right()
