@@ -7,18 +7,16 @@ WEBCAM_ID = 0
 webcam = bach.video.Webcam(webcam_id=WEBCAM_ID, width=1920, height=1080)
 webcam.initialize()
 
-if not webcam.ready():
-    exit(-1)
+if webcam.ready():
+    print("Webcam")
+    print("\tResolution: {}x{}".format(webcam.width, webcam.height))
 
-print("Webcam")
-print("\tResolution: {}x{}".format(webcam.width, webcam.height))
-
-while True:
+while webcam.ready():
     try:
         frame = webcam.get_frame()
     except ValueError as err:
         print("Error: ".format(str(err)))
-        exit(-1)
+        break
     cv2.imshow('frame', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

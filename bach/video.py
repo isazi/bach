@@ -31,7 +31,7 @@ class Video:
             if not code:
                 raise ValueError("Impossible to retrieve current frame.")
             if gray:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
             return frame
 
 

@@ -3,6 +3,8 @@ import cv2
 import bach.detector
 import bach.video
 import bach.graphics
+import bach.geometry
+import bach.objects
 
 
 def command_line():
@@ -45,6 +47,7 @@ def video_detection(arguments):
                                   height=arguments.height,
                                   fps=arguments.fps)
     video.initialize()
+    output = None
     if arguments.output:
         output = bach.video.VideoWriter("{}.mp4".format(arguments.output),
                                         width=video.width,
@@ -56,20 +59,23 @@ def video_detection(arguments):
         exit(-1)
     while video.ready():
         try:
-            frame = video.get_frame(gray=arguments.gray)
+            frame = video.get_frame()
         except ValueError as err:
             print("Error: ".format(str(err)))
-            exit(-1)
-        processed_frame = detector.preprocess_frame(frame)
-        detections = detector.process_frame(processed_frame, threshold=arguments.threshold)
+            break
+        detections = detector.detect_objects(frame, threshold=arguments.threshold)
+        aruco_markers = detector.detect_markers(frame)
         for detection in detections:
-            bach.graphics.draw_bounding_box(processed_frame,
-                                            detection[0],
-                                            detector.colors[detection[0]],
-                                            detection[2][0], detection[2][1], detection[2][2], detection[2][3])
+            entity = bach.objects.Entity(label=detection[0], width=detection[2][2], height=detection[2][3])
+            entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
+            for label, point in aruco_markers.items():
+                if entity.contains(point):
+                    entity.label = "{}: {}".format(entity.label, label)
+                    break
+            bach.graphics.draw_bounding_box(frame, entity, detector.colors[detection[0]])
         if arguments.output:
-            output.write(processed_frame)
-        cv2.imshow("BACH", processed_frame)
+            output.write(frame)
+        cv2.imshow("BACH", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cv2.destroyAllWindows()
@@ -88,7 +94,7 @@ def frame_extraction(arguments):
             frame = video.get_frame(gray=arguments.gray)
         except ValueError as err:
             print("Error: ".format(str(err)))
-            exit(-1)
+            break
         if frame_counter % arguments.reduction == 0:
             cv2.imwrite("{}_{}.png".format(arguments.output, frame_counter), frame)
         frame_counter = frame_counter + 1
