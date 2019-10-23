@@ -30,6 +30,8 @@ def command_line():
     parser.add_argument("--min_frames", help="Frame detection threshold", type=int, default=10)
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
+    # Debug
+    parser.add_argument("--debug", help="Debug mode", type=bool, action="store_true")
     return parser.parse_args()
 
 
@@ -103,6 +105,8 @@ def video_detection(arguments, video):
             else:
                 if frame_counter % 100 == 0:
                     entities.remove(entity)
+                    if arguments.debug:
+                        print("Ghost deleted.")
         # Store and show output
         if arguments.output:
             output.write(frame)
