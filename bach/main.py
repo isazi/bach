@@ -32,12 +32,10 @@ def command_line():
     return parser.parse_args()
 
 
-def video_detection(arguments):
-    detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
-    code = detector.initialize()
-    if not code:
-        print("Impossible to initialize darknet.")
-        exit(-1)
+def initialize_input(arguments):
+    """
+    Initialize the input.
+    """
     if arguments.file:
         video = bach.video.VideoFile(arguments.file)
     else:
@@ -46,6 +44,15 @@ def video_detection(arguments):
                                   height=arguments.height,
                                   fps=arguments.fps)
     video.initialize()
+    return video
+
+
+def video_detection(arguments, video):
+    detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
+    code = detector.initialize()
+    if not code:
+        print("Impossible to initialize darknet.")
+        exit(-1)
     output = None
     if arguments.output:
         output = bach.video.VideoWriter("{}.mp4".format(arguments.output),
@@ -81,9 +88,7 @@ def video_detection(arguments):
     exit(0)
 
 
-def frame_extraction(arguments):
-    video = bach.video.VideoFile(arguments.file)
-    video.initialize()
+def frame_extraction(arguments, video):
     if not video.ready():
         print("Impossible to open video source.")
         exit(-1)
@@ -101,10 +106,11 @@ def frame_extraction(arguments):
 
 def __main__():
     arguments = command_line()
+    video = initialize_input(arguments)
     if arguments.action == "detection":
-        video_detection(arguments)
+        video_detection(arguments, video)
     elif arguments.action == "frame_extraction":
-        frame_extraction(arguments)
+        frame_extraction(arguments, video)
     return 0
 
 
