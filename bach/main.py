@@ -31,7 +31,7 @@ def command_line():
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
     # Debug
-    parser.add_argument("--debug", help="Debug mode", type=bool, action="store_true")
+    parser.add_argument("--debug", help="Debug mode", action="store_true")
     return parser.parse_args()
 
 
