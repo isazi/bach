@@ -27,6 +27,7 @@ def command_line():
     parser.add_argument("-w", "--weights_path", help="File containing darknet weights", type=str)
     # Detection
     parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
+    parser.add_argument("--min_frames", help="Frame detection threshold", type=int, default=10)
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
     return parser.parse_args()
@@ -63,6 +64,7 @@ def video_detection(arguments, video):
     if not video.ready():
         print("Impossible to open video source.")
         exit(-1)
+    frame_counter = 0
     entities = list()
     while video.ready():
         try:
@@ -70,6 +72,7 @@ def video_detection(arguments, video):
         except ValueError as err:
             print("Error: ".format(str(err)))
             break
+        frame_counter = frame_counter + 1
         # Detect entities
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         for entity in entities:
@@ -78,6 +81,7 @@ def video_detection(arguments, video):
                 if entity.contains(new_position):
                     entity.update_position(new_position)
                     entity.update_size(detection[2][2], detection[2][3])
+                    entity.detections = entity.detections + 1
                     detections.remove(detection)
                     break
         for detection in detections:
@@ -92,9 +96,14 @@ def video_detection(arguments, video):
                 if entity.contains(point):
                     entity.marker = label
                     break
-        # Show on frame and visualize
+        # Add detections to frame and eliminate ghosts
         for entity in entities:
-            bach.graphics.draw_bounding_box(frame, entity)
+            if entity.detections > arguments.min_frames:
+                bach.graphics.draw_bounding_box(frame, entity)
+            else:
+                if frame_counter % 100 == 0:
+                    entities.remove(entity)
+        # Store and show output
         if arguments.output:
             output.write(frame)
         cv2.imshow("BACH", frame)
