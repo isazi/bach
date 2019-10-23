@@ -63,6 +63,7 @@ def video_detection(arguments, video):
     if not video.ready():
         print("Impossible to open video source.")
         exit(-1)
+    entities = list()
     while video.ready():
         try:
             frame = video.get_frame()
@@ -71,14 +72,29 @@ def video_detection(arguments, video):
             break
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         aruco_markers = detector.detect_markers(frame)
+        # Update known entities
+        for entity in entities:
+            for detection in detections:
+                new_position = bach.geometry.Point(detection[2][0], detection[2][1])
+                if entity.contains(new_position):
+                    entity.update_position(new_position)
+                    for label, point in aruco_markers.items():
+                        if entity.contains(point):
+                            entity.label = "{}: {}".format(detection[0], label)
+                            break
+                    break
+        # Find new entities
         for detection in detections:
-            entity = bach.objects.Entity(label=detection[0], width=detection[2][2], height=detection[2][3])
+            entity = bach.objects.Entity(label=detection[0], color_id=detector.colors[detection[0]],
+                                         width=detection[2][2], height=detection[2][3])
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             for label, point in aruco_markers.items():
                 if entity.contains(point):
                     entity.label = "{}: {}".format(entity.label, label)
                     break
-            bach.graphics.draw_bounding_box(frame, entity, detector.colors[detection[0]])
+        # Draw detections on video
+        for entity in entities:
+            bach.graphics.draw_bounding_box(frame, entity, entity.color_id)
         if arguments.output:
             output.write(frame)
         cv2.imshow("BACH", frame)
