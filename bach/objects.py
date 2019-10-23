@@ -1,10 +1,11 @@
 
 class Entity:
-    def __init__(self, label="", width=1, height=1):
+    def __init__(self, label="", color_id=0, width=1, height=1):
         """
         Default constructor.
         """
         self.label = label
+        self.color_id = color_id
         self.width = width
         self.height = height
         self.position = None
