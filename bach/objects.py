@@ -2,11 +2,12 @@ from bach.geometry import Point
 
 
 class Entity:
-    def __init__(self, label="", color=(0, 0, 0), width=1, height=1):
+    def __init__(self, label="", marker=-1, color=(0, 0, 0), width=1, height=1):
         """
         Default constructor.
         """
         self.label = label
+        self.marker = marker
         self.color = color
         self.width = width
         self.height = height

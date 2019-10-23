@@ -90,7 +90,7 @@ def video_detection(arguments, video):
         for entity in entities:
             for label, point in aruco_markers.items():
                 if entity.contains(point):
-                    entity.label = "{}: {}".format(entity.label, label)
+                    entity.marker = label
                     break
         # Show on frame and visualize
         for entity in entities:
