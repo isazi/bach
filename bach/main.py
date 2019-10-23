@@ -78,6 +78,7 @@ def video_detection(arguments, video):
                 new_position = bach.geometry.Point(detection[2][0], detection[2][1])
                 if entity.contains(new_position):
                     entity.update_position(new_position)
+                    entity.update_size(detection[2][2], detection[2][3])
                     for label, point in aruco_markers.items():
                         if entity.contains(point):
                             entity.label = "{}: {}".format(detection[0], label)
