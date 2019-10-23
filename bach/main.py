@@ -92,6 +92,7 @@ def video_detection(arguments, video):
                 if entity.contains(point):
                     entity.label = "{}: {}".format(entity.label, label)
                     break
+            entities.append(entity)
         # Draw detections on video
         for entity in entities:
             bach.graphics.draw_bounding_box(frame, entity, entity.color_id)
