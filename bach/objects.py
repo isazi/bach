@@ -7,7 +7,7 @@ class Entity:
         Default constructor.
         """
         self.label = label
-        self.color_id = color
+        self.color = color
         self.width = width
         self.height = height
         self.position = None
