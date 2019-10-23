@@ -86,7 +86,7 @@ def video_detection(arguments, video):
                     break
         # Find new entities
         for detection in detections:
-            entity = bach.objects.Entity(label=detection[0], color_id=detector.colors[detection[0]],
+            entity = bach.objects.Entity(label=detection[0], color=detector.colors[detection[0]],
                                          width=detection[2][2], height=detection[2][3])
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             for label, point in aruco_markers.items():
@@ -96,7 +96,7 @@ def video_detection(arguments, video):
             entities.append(entity)
         # Draw detections on video
         for entity in entities:
-            bach.graphics.draw_bounding_box(frame, entity, entity.color_id)
+            bach.graphics.draw_bounding_box(frame, entity)
         if arguments.output:
             output.write(frame)
         cv2.imshow("BACH", frame)
