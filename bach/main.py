@@ -27,18 +27,15 @@ def command_line():
     parser.add_argument("-w", "--weights_path", help="File containing darknet weights", type=str)
     # Detection
     parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
-    parser.add_argument("--gray", help="Convert input to grayscale", action="store_true")
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
     return parser.parse_args()
 
 
-def video_detection(arguments):
-    detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
-    code = detector.initialize()
-    if not code:
-        print("Impossible to initialize darknet.")
-        exit(-1)
+def initialize_input(arguments):
+    """
+    Initialize the input.
+    """
     if arguments.file:
         video = bach.video.VideoFile(arguments.file)
     else:
@@ -47,6 +44,15 @@ def video_detection(arguments):
                                   height=arguments.height,
                                   fps=arguments.fps)
     video.initialize()
+    return video
+
+
+def video_detection(arguments, video):
+    detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
+    code = detector.initialize()
+    if not code:
+        print("Impossible to initialize darknet.")
+        exit(-1)
     output = None
     if arguments.output:
         output = bach.video.VideoWriter("{}.mp4".format(arguments.output),
@@ -57,6 +63,7 @@ def video_detection(arguments):
     if not video.ready():
         print("Impossible to open video source.")
         exit(-1)
+    entities = list()
     while video.ready():
         try:
             frame = video.get_frame()
@@ -65,14 +72,32 @@ def video_detection(arguments):
             break
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         aruco_markers = detector.detect_markers(frame)
+        # Update known entities
+        for entity in entities:
+            for detection in detections:
+                new_position = bach.geometry.Point(detection[2][0], detection[2][1])
+                if entity.contains(new_position):
+                    entity.update_position(new_position)
+                    entity.update_size(detection[2][2], detection[2][3])
+                    for label, point in aruco_markers.items():
+                        if entity.contains(point):
+                            entity.label = "{}: {}".format(detection[0], label)
+                            break
+                    detections.remove(detection)
+                    break
+        # Find new entities
         for detection in detections:
-            entity = bach.objects.Entity(label=detection[0], width=detection[2][2], height=detection[2][3])
+            entity = bach.objects.Entity(label=detection[0], color=detector.colors[detection[0]],
+                                         width=detection[2][2], height=detection[2][3])
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             for label, point in aruco_markers.items():
                 if entity.contains(point):
                     entity.label = "{}: {}".format(entity.label, label)
                     break
-            bach.graphics.draw_bounding_box(frame, entity, detector.colors[detection[0]])
+            entities.append(entity)
+        # Draw detections on video
+        for entity in entities:
+            bach.graphics.draw_bounding_box(frame, entity)
         if arguments.output:
             output.write(frame)
         cv2.imshow("BACH", frame)
@@ -82,16 +107,14 @@ def video_detection(arguments):
     exit(0)
 
 
-def frame_extraction(arguments):
-    video = bach.video.VideoFile(arguments.file)
-    video.initialize()
+def frame_extraction(arguments, video):
     if not video.ready():
         print("Impossible to open video source.")
         exit(-1)
     frame_counter = 0
     while video.ready():
         try:
-            frame = video.get_frame(gray=arguments.gray)
+            frame = video.get_frame()
         except ValueError as err:
             print("Error: ".format(str(err)))
             break
@@ -102,10 +125,11 @@ def frame_extraction(arguments):
 
 def __main__():
     arguments = command_line()
+    video = initialize_input(arguments)
     if arguments.action == "detection":
-        video_detection(arguments)
+        video_detection(arguments, video)
     elif arguments.action == "frame_extraction":
-        frame_extraction(arguments)
+        frame_extraction(arguments, video)
     return 0
 
 
