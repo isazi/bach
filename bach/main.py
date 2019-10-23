@@ -82,6 +82,7 @@ def video_detection(arguments, video):
                         if entity.contains(point):
                             entity.label = "{}: {}".format(detection[0], label)
                             break
+                    detections.remove(detection)
                     break
         # Find new entities
         for detection in detections:
