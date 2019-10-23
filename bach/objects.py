@@ -31,3 +31,10 @@ class Entity:
                 and ((point.y > bottom_right[1]) and (point.y < bottom_right[1] + self.height)):
             return True
         return False
+
+    def update_position(self, point):
+        """
+        Update the position of the entity.
+        """
+        self.position.x = (self.position.x + point.x) / 2
+        self.position.y = (self.position.y + point.y) / 2
