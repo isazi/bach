@@ -7,12 +7,6 @@ import bach.geometry
 import bach.objects
 
 
-# Number of frames between ghost removal
-GHOST_UPDATE = 25
-# Fraction of frames an entity has to be in to be considered real
-GHOST_THRESHOLD = 0.85
-
-
 def command_line():
     parser = argparse.ArgumentParser()
     # Actions
@@ -33,7 +27,11 @@ def command_line():
     parser.add_argument("-w", "--weights_path", help="File containing darknet weights", type=str)
     # Detection
     parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
-    parser.add_argument("--min_frames", help="Frame detection threshold", type=int, default=10)
+    parser.add_argument("--min_frames", help="Minimum amount of frames for confirmed detection", type=int, default=10)
+    parser.add_argument("--ghost_update", help="Number of frames between ghosts update", type=int, default=25)
+    parser.add_argument("--ghost_threshold",
+                        help="Fraction of total frames an entity has to be in to be considered real",
+                        type=float, default=0.90)
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
     # Debug
@@ -109,8 +107,8 @@ def video_detection(arguments, video):
         for entity in entities:
             if entity.detections > arguments.min_frames:
                 bach.graphics.draw_bounding_box(frame, entity)
-            if (frame_counter % GHOST_UPDATE) == 0:
-                if entity.detections < (GHOST_THRESHOLD * frame_counter):
+            if (frame_counter % arguments.ghost_update) == 0:
+                if entity.detections < (arguments.ghost_threshold * frame_counter):
                     entities.remove(entity)
                     if arguments.debug:
                         print("Ghost deleted.")
