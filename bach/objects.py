@@ -1,5 +1,3 @@
-from bach.geometry import Point
-
 
 class Entity:
     def __init__(self, label="", marker=-1, color=(0, 0, 0), width=1, height=1, detections=1):
@@ -13,40 +11,31 @@ class Entity:
         self.height = height
         self.detections = detections
         self.position = None
+        self.box = None
 
     def top_left(self):
         """
         Coordinates of the top left corner of the entity.
         """
-        return Point(int(self.position.x - (self.width / 2)), int(self.position.y - (self.height / 2)))
+        return self.box.vertices.top_left()
 
     def bottom_right(self):
         """
         Coordinates of the bottom right corner of the entity.
         """
-        return Point(int(self.position.x + (self.width / 2)), int(self.position.y + (self.height / 2)))
+        return self.box.vertices.bottom_right()
 
     def contains(self, point):
         """
         Check if the point is contained within the entity.
         """
-        top_left = self.top_left()
-        bottom_right = self.bottom_right()
-        if ((point.x > top_left.x) and (point.x < bottom_right.x)) \
-                and ((point.y > top_left.y) and (point.y < bottom_right.y)):
-            return True
-        return False
+        return self.box.contains(point)
 
     def overlap(self, other):
         """
         Check if two entities are overlapping.
         """
-        if ((self.top_left().x <= other.top_left().x)
-            and (self.bottom_right().x >= other.top_left().x)) \
-                and ((self.top_left().y <= other.bottom_right().y)
-                     and (self.bottom_right().y <= other.bottom_right().y)):
-            return True
-        return False
+        return self.box.overlap(other.box)
 
     def update_position(self, point):
         """
@@ -54,6 +43,7 @@ class Entity:
         """
         self.position.x = (self.position.x + point.x) / 2
         self.position.y = (self.position.y + point.y) / 2
+        self.box.update(self.position, self.width, self.height)
 
     def update_size(self, width, height):
         """
@@ -61,3 +51,4 @@ class Entity:
         """
         self.width = (self.width + width) / 2
         self.height = (self.height + height) / 2
+        self.box.update(self.position, self.width, self.height)
