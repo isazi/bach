@@ -114,7 +114,6 @@ def video_detection(arguments, video):
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cv2.destroyAllWindows()
-    exit(0)
 
 
 def frame_extraction(arguments, video):
