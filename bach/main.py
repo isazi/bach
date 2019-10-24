@@ -92,7 +92,7 @@ def video_detection(arguments, video):
                     break
         for detection in detections:
             entity = bach.objects.Entity(label=detection[0], color=detector.colors[detection[0]],
-                                         width=detection[2][2], height=detection[2][3])
+                                         width=detection[2][2], height=detection[2][3], detections=frame_counter)
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             entities.append(entity)
         # Detect ArUco markers
