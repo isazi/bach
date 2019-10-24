@@ -7,6 +7,12 @@ import bach.geometry
 import bach.objects
 
 
+# Number of frames between ghost removal
+GHOST_UPDATE = 25
+# Fraction of frames an entity has to be in to be considered real
+GHOST_THRESHOLD = 0.85
+
+
 def command_line():
     parser = argparse.ArgumentParser()
     # Actions
@@ -103,8 +109,8 @@ def video_detection(arguments, video):
         for entity in entities:
             if entity.detections > arguments.min_frames:
                 bach.graphics.draw_bounding_box(frame, entity)
-            else:
-                if frame_counter % 100 == 0:
+            if (frame_counter % GHOST_UPDATE) == 0:
+                if entity.detections < (GHOST_THRESHOLD * frame_counter):
                     entities.remove(entity)
                     if arguments.debug:
                         print("Ghost deleted.")
