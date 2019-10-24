@@ -79,6 +79,8 @@ def video_detection(arguments, video):
         frame_counter = frame_counter + 1
         # Detect entities
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
+        if arguments.debug:
+            print("Entity detections: {}".format(len(detections)))
         for entity in entities:
             for detection in detections:
                 new_position = bach.geometry.Point(detection[2][0], detection[2][1])
@@ -95,6 +97,8 @@ def video_detection(arguments, video):
             entities.append(entity)
         # Detect ArUco markers
         aruco_markers = detector.detect_markers(frame)
+        if arguments.debug:
+            print("ArUco detections: {}".format(len(aruco_markers)))
         for entity in entities:
             if entity.marker == -1:
                 for label, point in aruco_markers.items():
@@ -106,7 +110,7 @@ def video_detection(arguments, video):
         for entity in entities:
             if entity.marker != -1:
                 bach.graphics.draw_bounding_box(frame, entity)
-            if (entity.detections / frame_counter)  < arguments.ghost_threshold:
+            if (entity.detections / frame_counter) < arguments.ghost_threshold:
                 entities.remove(entity)
                 if arguments.debug:
                     print("Ghost deleted.")
