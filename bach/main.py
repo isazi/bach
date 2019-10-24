@@ -34,6 +34,8 @@ def command_line():
                         type=float, default=0.90)
     parser.add_argument("--marker_distance", help="Maximum distance of a marker from an entity",
                         type=int, default=25)
+    parser.add_argument("--max_distance", help="Maximum distance for the new position of an entity",
+                        type=int, default=25)
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
     # Debug
@@ -89,7 +91,7 @@ def video_detection(arguments, video):
         for entity in entities:
             for detection in detections:
                 new_position = bach.geometry.Point(detection[2][0], detection[2][1])
-                if entity.contains(new_position):
+                if entity.contains(new_position) and entity.position.distance(new_position) < arguments.max_distance:
                     entity.update_position(new_position)
                     entity.update_size(detection[2][2], detection[2][3])
                     entity.detections = entity.detections + 1
