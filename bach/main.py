@@ -97,6 +97,7 @@ def video_detection(arguments, video):
             for label, point in aruco_markers.items():
                 if entity.contains(point):
                     entity.marker = label
+                    del aruco_markers[label]
                     break
         # Add detections to frame and eliminate ghosts
         for entity in entities:
