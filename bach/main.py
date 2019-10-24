@@ -52,8 +52,8 @@ def initialize_input(arguments):
 
 def video_detection(arguments, video):
     detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
-    code = detector.initialize()
-    if not code:
+    return_code = detector.initialize()
+    if not return_code:
         print("Impossible to initialize darknet.")
         exit(-1)
     output = None
