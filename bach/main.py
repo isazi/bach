@@ -116,6 +116,8 @@ def video_detection(arguments, video):
                 entities.remove(entity)
                 if arguments.debug:
                     print("Ghost deleted.")
+        if arguments.debug:
+            print("Entities: {}".format(len(entities)))
         # Store and show output
         if arguments.output:
             output.write(frame)
