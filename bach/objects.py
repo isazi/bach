@@ -2,14 +2,16 @@ from bach.geometry import Point
 
 
 class Entity:
-    def __init__(self, label="", color=(0, 0, 0), width=1, height=1):
+    def __init__(self, label="", marker=-1, color=(0, 0, 0), width=1, height=1, detections=1):
         """
         Default constructor.
         """
         self.label = label
+        self.marker = marker
         self.color = color
         self.width = width
         self.height = height
+        self.detections = detections
         self.position = None
 
     def top_left(self):
@@ -32,6 +34,17 @@ class Entity:
         bottom_right = self.bottom_right()
         if ((point.x > top_left.x) and (point.x < bottom_right.x)) \
                 and ((point.y > top_left.y) and (point.y < bottom_right.y)):
+            return True
+        return False
+
+    def overlap(self, other):
+        """
+        Check if two entities are overlapping.
+        """
+        if ((self.top_left().x <= other.top_left().x)
+            and (self.bottom_right().x >= other.top_left().x)) \
+                and ((self.top_left().y <= other.bottom_right().y)
+                     and (self.bottom_right().y <= other.bottom_right().y)):
             return True
         return False
 

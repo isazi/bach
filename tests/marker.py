@@ -4,8 +4,17 @@ import bach.video
 
 
 WEBCAM_ID = 0
-aruco_dict = aruco.Dictionary_get(aruco.DICT_ARUCO_ORIGINAL)
+aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_50)
 parameters = aruco.DetectorParameters_create()
+parameters.adaptiveThreshWinSizeMin = 3
+parameters.adaptiveThreshWinSizeMax = 60
+parameters.adaptiveThreshWinSizeStep = 3
+parameters.minMarkerPerimeterRate = 0.004
+parameters.maxMarkerPerimeterRate = 0.032
+parameters.markerBorderBits = 1
+parameters.maxErroneousBitsInBorderRate = 0.40
+parameters.errorCorrectionRate = 0.9
+parameters.detectInvertedMarker = False
 webcam = bach.video.Webcam(webcam_id=WEBCAM_ID, width=1920, height=1088)
 webcam.initialize()
 
