@@ -37,6 +37,17 @@ class Entity:
             return True
         return False
 
+    def overlap(self, other):
+        """
+        Check if two entities are overlapping.
+        """
+        if ((self.top_left().x <= other.top_left().x)
+            and (self.bottom_right().x >= other.top_left().x)) \
+                and ((self.top_left().y <= other.bottom_right().y)
+                     and (self.bottom_right().y <= other.bottom_right().y)):
+            return True
+        return False
+
     def update_position(self, point):
         """
         Update the position of the entity.
