@@ -27,8 +27,6 @@ def command_line():
     parser.add_argument("-w", "--weights_path", help="File containing darknet weights", type=str)
     # Detection
     parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
-    parser.add_argument("--min_frames", help="Minimum amount of frames for confirmed detection", type=int, default=10)
-    parser.add_argument("--ghost_update", help="Number of frames between ghosts update", type=int, default=25)
     parser.add_argument("--ghost_threshold",
                         help="Fraction of total frames an entity has to be in to be considered real",
                         type=float, default=0.90)
@@ -106,13 +104,12 @@ def video_detection(arguments, video):
                         break
         # Add detections to frame and eliminate ghosts
         for entity in entities:
-            if entity.detections > arguments.min_frames:
+            if entity.marker != -1:
                 bach.graphics.draw_bounding_box(frame, entity)
-            if (frame_counter % arguments.ghost_update) == 0:
-                if entity.detections < (arguments.ghost_threshold * frame_counter):
-                    entities.remove(entity)
-                    if arguments.debug:
-                        print("Ghost deleted.")
+            if (entity.detections / frame_counter)  < arguments.ghost_threshold:
+                entities.remove(entity)
+                if arguments.debug:
+                    print("Ghost deleted.")
         # Store and show output
         if arguments.output:
             output.write(frame)
