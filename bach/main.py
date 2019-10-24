@@ -102,7 +102,7 @@ def video_detection(arguments, video):
         for entity in entities:
             if entity.marker == -1:
                 for label, point in aruco_markers.items():
-                    if entity.contains(point):
+                    if entity.position.distance(point) < 25:
                         entity.marker = label
                         del aruco_markers[label]
                         break
