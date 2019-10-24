@@ -30,6 +30,8 @@ def command_line():
     parser.add_argument("--ghost_threshold",
                         help="Fraction of total frames an entity has to be in to be considered real",
                         type=float, default=0.90)
+    parser.add_argument("--marker_distance", help="Maximum distance of a marker from an entity",
+                        type=int, default=25)
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
     # Debug
@@ -102,7 +104,7 @@ def video_detection(arguments, video):
         for entity in entities:
             if entity.marker == -1:
                 for label, point in aruco_markers.items():
-                    if entity.position.distance(point) < 25:
+                    if entity.position.distance(point) < arguments.marker_distance:
                         entity.marker = label
                         del aruco_markers[label]
                         break
