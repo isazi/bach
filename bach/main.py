@@ -1,5 +1,6 @@
 import argparse
 import cv2
+from bach.darknet import  set_gpu
 import bach.detector
 import bach.video
 import bach.graphics
@@ -15,6 +16,7 @@ def command_line():
                         choices=["detection", "frame_extraction"],
                         required=True)
     # Devices
+    parser.add_argument("--gpu", help="ID of the GPU to use for Darknet", type=int, default=0)
     parser.add_argument("--webcam", help="The ID of the webcam", type=int)
     parser.add_argument("--file", help="The file containing the video", type=str)
     parser.add_argument("--width", help="Webcam's resolution width", type=int, default=640)
@@ -55,6 +57,7 @@ def initialize_input(arguments):
 
 
 def video_detection(arguments, video):
+    set_gpu(arguments.gpu)
     detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
     return_code = detector.initialize()
     if not return_code:
