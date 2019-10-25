@@ -33,12 +33,12 @@ class Rectangle:
         """
         self.vertices[0].x = int(center.x - (width / 2))
         self.vertices[0].y = int(center.y - (height / 2))
-        self.vertices[1].x = self.vertices[0].x + width
-        self.vertices[1].y = self.vertices[0].y
-        self.vertices[2].x = self.vertices[0].x
-        self.vertices[2].y = self.vertices[0].y + height
-        self.vertices[3].x = self.vertices[0].x + width
-        self.vertices[3].y = self.vertices[0].y + height
+        self.vertices[1].x = int(self.vertices[0].x + width)
+        self.vertices[1].y = int(self.vertices[0].y)
+        self.vertices[2].x = int(self.vertices[0].x)
+        self.vertices[2].y = int(self.vertices[0].y + height)
+        self.vertices[3].x = int(self.vertices[0].x + width)
+        self.vertices[3].y = int(self.vertices[0].y + height)
 
     def top_left(self):
         """
