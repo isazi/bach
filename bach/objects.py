@@ -17,13 +17,13 @@ class Entity:
         """
         Coordinates of the top left corner of the entity.
         """
-        return self.box.vertices.top_left()
+        return self.box.top_left()
 
     def bottom_right(self):
         """
         Coordinates of the bottom right corner of the entity.
         """
-        return self.box.vertices.bottom_right()
+        return self.box.bottom_right()
 
     def contains(self, point):
         """
