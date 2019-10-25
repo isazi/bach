@@ -66,12 +66,12 @@ class Rectangle:
         Check if two rectangles overlap by any margin.
         """
         for vertex in self.vertices:
-            if not other.contains(vertex):
-                return False
+            if other.contains(vertex):
+                return True
         for vertex in other.vertices:
-            if not self.contains(vertex):
-                return False
-        return True
+            if self.contains(vertex):
+                return True
+        return False
 
 
 def distance(point_one, point_two):
