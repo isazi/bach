@@ -1,6 +1,6 @@
 import argparse
 import cv2
-from bach.darknet import  set_gpu
+from bach.darknet import set_gpu
 import bach.detector
 import bach.video
 import bach.graphics
@@ -91,7 +91,8 @@ def video_detection(arguments, video):
         for entity in entities:
             for detection in detections:
                 new_position = bach.geometry.Point(detection[2][0], detection[2][1])
-                if entity.contains(new_position) and entity.position.distance(new_position) < arguments.max_distance:
+                new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
+                if entity.box.overlap(new_box):
                     entity.update_position(new_position)
                     entity.update_size(detection[2][2], detection[2][3])
                     entity.detections = entity.detections + 1
