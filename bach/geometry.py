@@ -23,9 +23,9 @@ class Rectangle:
         """
         self.vertices = list()
         self.vertices.append(Point(int(center.x - (width / 2)), int(center.y - (height / 2))))
-        self.vertices.append(Point(self.vertices[0].x + width, self.vertices[0].y))
-        self.vertices.append(Point(self.vertices[0].x, self.vertices[0].y + height))
-        self.vertices.append(Point(self.vertices[0].x + width, self.vertices[0].y + height))
+        self.vertices.append(Point(int(self.vertices[0].x + width), int(self.vertices[0].y)))
+        self.vertices.append(Point(int(self.vertices[0].x), int(self.vertices[0].y + height)))
+        self.vertices.append(Point(int(self.vertices[0].x + width), int(self.vertices[0].y + height)))
 
     def update(self, center, width, height):
         """
