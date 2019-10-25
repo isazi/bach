@@ -56,8 +56,8 @@ class Rectangle:
         """
         Check if the point is contained within the rectangle.
         """
-        if ((point.x > self.vertices[0].x) and (point.x < self.vertices[3].x)) \
-                and ((point.y > self.vertices[0].y) and (point.y < self.vertices[3].y)):
+        if ((point.x >= self.vertices[0].x) and (point.x <= self.vertices[3].x)) \
+                and ((point.y >= self.vertices[0].y) and (point.y <= self.vertices[3].y)):
             return True
         return False
 
