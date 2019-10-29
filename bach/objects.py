@@ -1,6 +1,6 @@
 
 class Entity:
-    def __init__(self, label="", marker=-1, color=(0, 0, 0), width=1, height=1, detections=1):
+    def __init__(self, label="", marker=-1, color=(0, 0, 0), width=1, height=1, seen=None):
         """
         Default constructor.
         """
@@ -9,7 +9,7 @@ class Entity:
         self.color = color
         self.width = width
         self.height = height
-        self.detections = detections
+        self.frame_seen = seen
         self.position = None
         self.box = None
 

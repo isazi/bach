@@ -96,10 +96,10 @@ def video_detection(arguments, video):
                 if entity.box.overlap(new_box):
                     entity.update_position(new_position)
                     entity.update_size(detection[2][2], detection[2][3])
-                    entity.detections = entity.detections + 1
+                    entity.frame_seen = frame_counter
                     detections.remove(detection)
                     if arguments.debug:
-                        print("\tUpdate named entity {}: new position".format(entity.marker))
+                        print("\tUpdate entity \"{} {}\": new position".format(entity.label, entity.marker))
                     break
         # Detect unnamed entities
         for entity in unnamed_entities:
@@ -109,14 +109,14 @@ def video_detection(arguments, video):
                 if entity.box.overlap(new_box):
                     entity.update_position(new_position)
                     entity.update_size(detection[2][2], detection[2][3])
-                    entity.detections = entity.detections + 1
+                    entity.detections = frame_counter
                     detections.remove(detection)
                     if arguments.debug:
                         print("\tUpdate unnamed entity: new position")
                     break
         for detection in detections:
             entity = bach.objects.Entity(label=detection[0], color=detector.colors[detection[0]],
-                                         width=detection[2][2], height=detection[2][3], detections=frame_counter)
+                                         width=detection[2][2], height=detection[2][3], seen=frame_counter)
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
             unnamed_entities.append(entity)
@@ -139,7 +139,7 @@ def video_detection(arguments, video):
         for label, entity in named_entities.items():
             if label != -1:
                 bach.graphics.draw_bounding_box(frame, entity)
-            if (entity.detections / frame_counter) < arguments.ghost_threshold:
+            if entity.frame_seen < arguments.ghost_threshold * frame_counter:
                 ghosts.append(label)
         for ghost in ghosts:
             del named_entities[ghost]
