@@ -87,7 +87,7 @@ def video_detection(arguments, video):
         # Detect entities
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         if arguments.debug:
-            print("Entity detections: {}".format(len(detections)))
+            print("Darknet detections: {}".format(len(detections)))
         for entity in entities.values():
             for detection in detections:
                 new_position = bach.geometry.Point(detection[2][0], detection[2][1])
@@ -97,6 +97,8 @@ def video_detection(arguments, video):
                     entity.update_size(detection[2][2], detection[2][3])
                     entity.detections = entity.detections + 1
                     detections.remove(detection)
+                    if arguments.debug:
+                        print("\tUpdate entity {}: new position".format(entity.marker))
                     break
         for detection in detections:
             entity = bach.objects.Entity(label=detection[0], color=detector.colors[detection[0]],
@@ -104,6 +106,8 @@ def video_detection(arguments, video):
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
             entities[entity.marker] = entity
+            if arguments.debug:
+                print("\tUpdate new entity.")
         # Detect ArUco markers
         aruco_markers = detector.detect_markers(frame)
         if arguments.debug:
