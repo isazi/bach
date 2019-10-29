@@ -116,13 +116,16 @@ def video_detection(arguments, video):
                         del aruco_markers[label]
                         break
         # Add detections to frame and eliminate ghosts
+        ghosts = list()
         for label, entity in entities.items():
             if label != -1:
                 bach.graphics.draw_bounding_box(frame, entity)
             if (entity.detections / frame_counter) < arguments.ghost_threshold:
-                del entities[label]
-                if arguments.debug:
-                    print("Ghost deleted.")
+                ghosts.append(label)
+        for ghost in ghosts:
+            del entities[ghost]
+            if arguments.debug:
+                print("Ghost deleted.")
         if arguments.debug:
             print("Entities: {}".format(len(entities)))
         # Store and show output
