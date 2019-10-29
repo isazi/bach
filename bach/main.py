@@ -76,7 +76,8 @@ def video_detection(arguments, video):
         print("Impossible to open video source.")
         exit(-1)
     frame_counter = 0
-    entities = dict()
+    named_entities = dict()
+    unnamed_entities = list()
     while video.ready():
         try:
             frame = video.get_frame()
@@ -84,11 +85,11 @@ def video_detection(arguments, video):
             print("Error: ".format(str(err)))
             break
         frame_counter = frame_counter + 1
-        # Detect entities
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         if arguments.debug:
             print("Darknet detections: {}".format(len(detections)))
-        for entity in entities.values():
+        # Detect named entities
+        for entity in named_entities.values():
             for detection in detections:
                 new_position = bach.geometry.Point(detection[2][0], detection[2][1])
                 new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
@@ -105,33 +106,33 @@ def video_detection(arguments, video):
                                          width=detection[2][2], height=detection[2][3], detections=frame_counter)
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
-            entities[entity.marker] = entity
+            unnamed_entities.append(entity)
             if arguments.debug:
                 print("\tNew entity.")
         # Detect ArUco markers
         aruco_markers = detector.detect_markers(frame)
         if arguments.debug:
             print("ArUco detections: {}".format(len(aruco_markers)))
-        for entity in entities.values():
-            if entity.marker == -1:
-                for label, point in aruco_markers.items():
-                    if entity.position.distance(point) < arguments.marker_distance:
-                        entity.marker = label
-                        del aruco_markers[label]
-                        break
+        for entity in unnamed_entities:
+            for label, point in aruco_markers.items():
+                if entity.position.distance(point) < arguments.marker_distance:
+                    entity.marker = label
+                    del aruco_markers[label]
+                    break
         # Add detections to frame and eliminate ghosts
         ghosts = list()
-        for label, entity in entities.items():
+        for label, entity in named_entities.items():
             if label != -1:
                 bach.graphics.draw_bounding_box(frame, entity)
             if (entity.detections / frame_counter) < arguments.ghost_threshold:
                 ghosts.append(label)
         for ghost in ghosts:
-            del entities[ghost]
+            del named_entities[ghost]
             if arguments.debug:
                 print("Ghost deleted.")
         if arguments.debug:
-            print("Entities: {}".format(len(entities)))
+            print("Entities: {}".format(len(named_entities)))
+            print("Unnamed entities: {}".format(len(unnamed_entities)))
         # Store and show output
         if arguments.output:
             output.write(frame)
