@@ -76,7 +76,7 @@ def video_detection(arguments, video):
         print("Impossible to open video source.")
         exit(-1)
     frame_counter = 0
-    entities = list()
+    entities = dict()
     while video.ready():
         try:
             frame = video.get_frame()
@@ -103,7 +103,7 @@ def video_detection(arguments, video):
                                          width=detection[2][2], height=detection[2][3], detections=frame_counter)
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
-            entities.append(entity)
+            entities[entity.marker] = entity
         # Detect ArUco markers
         aruco_markers = detector.detect_markers(frame)
         if arguments.debug:
@@ -120,7 +120,7 @@ def video_detection(arguments, video):
             if entity.marker != -1:
                 bach.graphics.draw_bounding_box(frame, entity)
             if (entity.detections / frame_counter) < arguments.ghost_threshold:
-                entities.remove(entity)
+                del entities[entity.marker]
                 if arguments.debug:
                     print("Ghost deleted.")
         if arguments.debug:
