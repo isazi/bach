@@ -30,8 +30,8 @@ def command_line():
     # Detection
     parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
     parser.add_argument("--ghost_threshold",
-                        help="Fraction of total frames an entity has to be in to be considered real",
-                        type=float, default=0.90)
+                        help="Number of frames without a new detection before the entity becomes a ghost",
+                        type=int, default=25)
     parser.add_argument("--marker_distance", help="Maximum distance of a marker from an entity",
                         type=int, default=25)
     parser.add_argument("--max_distance", help="Maximum distance for the new position of an entity",
@@ -139,14 +139,14 @@ def video_detection(arguments, video):
         for label, entity in named_entities.items():
             if label != -1:
                 bach.graphics.draw_bounding_box(frame, entity)
-            if entity.frame_seen < arguments.ghost_threshold * frame_counter:
+            if entity.frame_seen < frame_counter - arguments.ghost_threshold:
                 ghosts.append(label)
         for ghost in ghosts:
             if arguments.debug:
                 print("\tGhost \"{} {}\" deleted.".format(named_entities[ghost].label, named_entities[ghost].marker))
             del named_entities[ghost]
         for entity in unnamed_entities:
-            if entity.frame_seen < arguments.ghost_threshold * frame_counter:
+            if entity.frame_seen < frame_counter - arguments.ghost_threshold:
                 if arguments.debug:
                     print("\tGhost deleted.")
                 unnamed_entities.remove(entity)
