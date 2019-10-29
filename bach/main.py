@@ -99,7 +99,20 @@ def video_detection(arguments, video):
                     entity.detections = entity.detections + 1
                     detections.remove(detection)
                     if arguments.debug:
-                        print("\tUpdate entity {}: new position".format(entity.marker))
+                        print("\tUpdate named entity {}: new position".format(entity.marker))
+                    break
+        # Detect unnamed entities
+        for entity in unnamed_entities:
+            for detection in detections:
+                new_position = bach.geometry.Point(detection[2][0], detection[2][1])
+                new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
+                if entity.box.overlap(new_box):
+                    entity.update_position(new_position)
+                    entity.update_size(detection[2][2], detection[2][3])
+                    entity.detections = entity.detections + 1
+                    detections.remove(detection)
+                    if arguments.debug:
+                        print("\tUpdate unnamed entity: new position")
                     break
         for detection in detections:
             entity = bach.objects.Entity(label=detection[0], color=detector.colors[detection[0]],
