@@ -142,9 +142,14 @@ def video_detection(arguments, video):
             if entity.frame_seen < arguments.ghost_threshold * frame_counter:
                 ghosts.append(label)
         for ghost in ghosts:
-            del named_entities[ghost]
             if arguments.debug:
-                print("Ghost deleted.")
+                print("\tGhost \"{} {}\" deleted.".format(named_entities[ghost].label, named_entities[ghost].marker))
+            del named_entities[ghost]
+        for entity in unnamed_entities:
+            if entity.frame_seen < arguments.ghost_threshold * frame_counter:
+                if arguments.debug:
+                    print("\tGhost deleted.")
+                unnamed_entities.remove(entity)
         if arguments.debug:
             print("Entities: {}".format(len(named_entities)))
             print("Unnamed entities: {}".format(len(unnamed_entities)))
