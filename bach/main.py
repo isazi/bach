@@ -159,6 +159,8 @@ def video_detection(arguments, video):
         cv2.imshow("BACH", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+        if arguments.debug:
+            print()
     cv2.destroyAllWindows()
 
 
