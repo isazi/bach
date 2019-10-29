@@ -21,6 +21,9 @@ class Rectangle:
         """
         Default constructor.
         """
+        self.center = center
+        self.width = width
+        self.height = height
         self.vertices = list()
         self.vertices.append(Point(int(center.x - (width / 2)), int(center.y - (height / 2))))
         self.vertices.append(Point(int(self.vertices[0].x + width), int(self.vertices[0].y)))
@@ -31,6 +34,9 @@ class Rectangle:
         """
         Update the position of the rectangle.
         """
+        self.center = center
+        self.width = width
+        self.height = height
         self.vertices[0].x = int(center.x - (width / 2))
         self.vertices[0].y = int(center.y - (height / 2))
         self.vertices[1].x = int(self.vertices[0].x + width)
@@ -51,6 +57,12 @@ class Rectangle:
         Return the bottom right point of the rectangle.
         """
         return self.vertices[3]
+
+    def area(self):
+        """
+        Computes the area of the rectangle.
+        """
+        return self.width * self.height
 
     def contains(self, point):
         """
