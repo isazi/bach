@@ -90,30 +90,36 @@ def video_detection(arguments, video):
             print("Darknet detections: {}".format(len(detections)))
         # Detect named entities
         for entity in named_entities.values():
+            closest_detections = dict()
             for detection in detections:
                 new_position = bach.geometry.Point(detection[2][0], detection[2][1])
                 new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
                 if entity.box.overlap(new_box):
-                    entity.update_position(new_position)
-                    entity.update_size(detection[2][2], detection[2][3])
-                    entity.frame_seen = frame_counter
-                    detections.remove(detection)
-                    if arguments.debug:
-                        print("\tUpdate entity \"{} {}\": new position".format(entity.label, entity.marker))
-                    break
+                    closest_detections[entity.box.overlap_area(new_box)] = detection
+            if len(closest_detections) > 0:
+                detection = closest_detections[min(closest_detections.keys())]
+                entity.update_position(bach.geometry.Point(detection[2][0], detection[2][1]))
+                entity.update_size(detection[2][2], detection[2][3])
+                entity.frame_seen = frame_counter
+                detections.remove(detection)
+                if arguments.debug:
+                    print("\tUpdate entity \"{} {}\": new position".format(entity.label, entity.marker))
         # Detect unnamed entities
         for entity in unnamed_entities:
+            closest_detections = dict()
             for detection in detections:
                 new_position = bach.geometry.Point(detection[2][0], detection[2][1])
                 new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
                 if entity.box.overlap(new_box):
-                    entity.update_position(new_position)
-                    entity.update_size(detection[2][2], detection[2][3])
-                    entity.detections = frame_counter
-                    detections.remove(detection)
-                    if arguments.debug:
-                        print("\tUpdate unnamed entity: new position")
-                    break
+                    closest_detections[entity.box.overlap_area(new_box)] = detection
+            if len(closest_detections) > 0:
+                detection = closest_detections[min(closest_detections.keys())]
+                entity.update_position(bach.geometry.Point(detection[2][0], detection[2][1]))
+                entity.update_size(detection[2][2], detection[2][3])
+                entity.frame_seen = frame_counter
+                detections.remove(detection)
+                if arguments.debug:
+                    print("\tUpdate unnamed entity: new position")
         for detection in detections:
             entity = bach.objects.Entity(label=detection[0], color=detector.colors[detection[0]],
                                          width=detection[2][2], height=detection[2][3], seen=frame_counter)
