@@ -112,7 +112,9 @@ def video_detection(arguments, video):
                 entity.frame_seen = frame_counter
                 detections.remove(detection)
                 if arguments.debug:
-                    print("\tUpdate entity \"{} {}\": new position".format(entity.label, entity.marker))
+                    print("\tUpdate entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
+                        entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
+                        entity.bottom_right().y, entity.width, entity.height))
         # Detect unnamed entities
         for entity in unnamed_entities:
             closest_detections = dict()
