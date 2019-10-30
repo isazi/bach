@@ -85,6 +85,35 @@ class Rectangle:
                 return True
         return False
 
+    def overlap_area(self, other):
+        """
+        Measure the area of the overlap between two rectangles.
+        """
+        inside_vertices = 0
+        for vertex in other.vertices:
+            if self.contains(vertex):
+                inside_vertices = inside_vertices + 1
+        width = 0
+        height = 0
+        if inside_vertices == 1:
+            width = min([other.bottom_right().x - self.top_left().x, self.bottom_right().x - other.top_left().x])
+            height = min([other.bottom_right().y - self.top_left().y, self.bottom_right().y - other.top_left().y])
+        elif inside_vertices == 2:
+            width = min(
+                [other.bottom_right().x - other.top_left().x,
+                 other.bottom_right().x - self.top_left().x,
+                 self.bottom_right().x - other.top_left().x]
+            )
+            height = min(
+                [other.bottom_right().y - other.top_left().y,
+                 other.bottom_right().y - self.top_left().y,
+                 self.bottom_right().y - other.top_left().y]
+            )
+        elif inside_vertices == 4:
+            width = other.width
+            height = other.height
+        return width * height
+
 
 def distance(point_one, point_two):
     """
