@@ -25,10 +25,10 @@ class Rectangle:
         self.width = width
         self.height = height
         self.vertices = list()
-        self.vertices.append(Point(int(center.x - (width / 2)), int(center.y - (height / 2))))
-        self.vertices.append(Point(int(self.vertices[0].x + width), int(self.vertices[0].y)))
-        self.vertices.append(Point(int(self.vertices[0].x), int(self.vertices[0].y + height)))
-        self.vertices.append(Point(int(self.vertices[0].x + width), int(self.vertices[0].y + height)))
+        self.vertices.append(Point(center.x - (width / 2), center.y - (height / 2)))
+        self.vertices.append(Point(self.vertices[0].x + width, self.vertices[0].y))
+        self.vertices.append(Point(self.vertices[0].x, self.vertices[0].y + height))
+        self.vertices.append(Point(self.vertices[0].x + width, self.vertices[0].y + height))
 
     def update(self, center, width, height):
         """
@@ -37,14 +37,14 @@ class Rectangle:
         self.center = center
         self.width = width
         self.height = height
-        self.vertices[0].x = int(center.x - (width / 2))
-        self.vertices[0].y = int(center.y - (height / 2))
-        self.vertices[1].x = int(self.vertices[0].x + width)
-        self.vertices[1].y = int(self.vertices[0].y)
-        self.vertices[2].x = int(self.vertices[0].x)
-        self.vertices[2].y = int(self.vertices[0].y + height)
-        self.vertices[3].x = int(self.vertices[0].x + width)
-        self.vertices[3].y = int(self.vertices[0].y + height)
+        self.vertices[0].x = center.x - (width / 2)
+        self.vertices[0].y = center.y - (height / 2)
+        self.vertices[1].x = self.vertices[0].x + width
+        self.vertices[1].y = self.vertices[0].y
+        self.vertices[2].x = self.vertices[0].x
+        self.vertices[2].y = self.vertices[0].y + height
+        self.vertices[3].x = self.vertices[0].x + width
+        self.vertices[3].y = self.vertices[0].y + height
 
     def top_left(self):
         """
@@ -95,7 +95,16 @@ class Rectangle:
                 inside_vertices = inside_vertices + 1
         width = 0
         height = 0
-        if inside_vertices == 1:
+        if inside_vertices == 0:
+            width = min([other.bottom_right().x - other.top_left().x,
+                         self.bottom_right().x - self.top_left().x,
+                         other.bottom_right().x - self.top_left().x,
+                         self.bottom_right().x - other.top_left().x])
+            height = min([other.bottom_right().y - other.top_left().y,
+                          self.bottom_right().y - self.top_left().y,
+                          other.bottom_right().y - self.top_left().y,
+                          self.bottom_right().y - other.top_left().y])
+        elif inside_vertices == 1:
             width = min([other.bottom_right().x - self.top_left().x, self.bottom_right().x - other.top_left().x])
             height = min([other.bottom_right().y - self.top_left().y, self.bottom_right().y - other.top_left().y])
         elif inside_vertices == 2:
