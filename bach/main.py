@@ -85,6 +85,8 @@ def video_detection(arguments, video):
             print("Error: ".format(str(err)))
             break
         frame_counter = frame_counter + 1
+        if arguments.debug:
+            print("Frame: {}".format(frame_counter))
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         if arguments.debug:
             print("Darknet detections: {}".format(len(detections)))
