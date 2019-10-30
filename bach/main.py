@@ -96,8 +96,7 @@ def video_detection(arguments, video):
             for detection in detections:
                 new_position = bach.geometry.Point(detection[2][0], detection[2][1])
                 new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
-                overlap = entity.box.overlap_area(new_box)
-                if overlap > 0:
+                if entity.box.overlap(new_box):
                     if arguments.debug:
                         print("\t\tdetection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
                                                                                            new_box.top_left().y,
@@ -105,7 +104,7 @@ def video_detection(arguments, video):
                                                                                            new_box.bottom_right().y,
                                                                                            new_box.width,
                                                                                            new_box.height))
-                    closest_detections[overlap] = detection
+                    closest_detections[entity.box.overlap_area(new_box)] = detection
             if len(closest_detections) > 0:
                 detection = closest_detections[max(closest_detections.keys())]
                 entity.update_position(bach.geometry.Point(detection[2][0], detection[2][1]))
@@ -122,9 +121,8 @@ def video_detection(arguments, video):
             for detection in detections:
                 new_position = bach.geometry.Point(detection[2][0], detection[2][1])
                 new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
-                overlap = entity.box.overlap_area(new_box)
-                if overlap > 0:
-                    closest_detections[overlap] = detection
+                if entity.box.overlap(new_box):
+                    closest_detections[entity.box.overlap_area(new_box)] = detection
             if len(closest_detections) > 0:
                 detection = closest_detections[max(closest_detections.keys())]
                 entity.update_position(bach.geometry.Point(detection[2][0], detection[2][1]))

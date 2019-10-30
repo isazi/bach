@@ -73,6 +73,18 @@ class Rectangle:
             return True
         return False
 
+    def overlap(self, other):
+        """
+        Check if two rectangles overlap by any margin.
+        """
+        for vertex in self.vertices:
+            if other.contains(vertex):
+                return True
+        for vertex in other.vertices:
+            if self.contains(vertex):
+                return True
+        return False
+
     def overlap_area(self, other):
         """
         Measure the area of the overlap between two rectangles.
