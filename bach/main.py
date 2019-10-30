@@ -96,12 +96,12 @@ def video_detection(arguments, video):
                 new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
                 if entity.box.overlap(new_box):
                     if arguments.debug:
-                        print("\t\tdetection: tl ({}, {}), br ({}, {}), w {}, h{}".format(new_box.top_left().x,
-                                                                                          new_box.top_left().y,
-                                                                                          new_box.bottom_right().x,
-                                                                                          new_box.bottom_right().y,
-                                                                                          new_box.width,
-                                                                                          new_box.height))
+                        print("\t\tdetection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
+                                                                                           new_box.top_left().y,
+                                                                                           new_box.bottom_right().x,
+                                                                                           new_box.bottom_right().y,
+                                                                                           new_box.width,
+                                                                                           new_box.height))
                     closest_detections[entity.box.overlap_area(new_box)] = detection
             if len(closest_detections) > 0:
                 detection = closest_detections[max(closest_detections.keys())]
