@@ -97,7 +97,7 @@ def video_detection(arguments, video):
                 if entity.box.overlap(new_box):
                     closest_detections[entity.box.overlap_area(new_box)] = detection
             if len(closest_detections) > 0:
-                detection = closest_detections[min(closest_detections.keys())]
+                detection = closest_detections[max(closest_detections.keys())]
                 entity.update_position(bach.geometry.Point(detection[2][0], detection[2][1]))
                 entity.update_size(detection[2][2], detection[2][3])
                 entity.frame_seen = frame_counter
@@ -113,7 +113,7 @@ def video_detection(arguments, video):
                 if entity.box.overlap(new_box):
                     closest_detections[entity.box.overlap_area(new_box)] = detection
             if len(closest_detections) > 0:
-                detection = closest_detections[min(closest_detections.keys())]
+                detection = closest_detections[max(closest_detections.keys())]
                 entity.update_position(bach.geometry.Point(detection[2][0], detection[2][1]))
                 entity.update_size(detection[2][2], detection[2][3])
                 entity.frame_seen = frame_counter
