@@ -59,9 +59,12 @@ def initialize_input(arguments):
 
 
 def detect_entities(arguments, entities, detections, frame_counter):
-    for entity in entities:
-        closest_detections = dict()
-        for detection in detections:
+    detection_id = 0
+    votes = list()
+    for detection in detections:
+        votes.append(dict())
+        # Entities express interest for close detections
+        for entity in entities:
             new_position = bach.geometry.Point(detection[2][0], detection[2][1])
             new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
             if entity.box.overlap(new_box):
@@ -74,17 +77,31 @@ def detect_entities(arguments, entities, detections, frame_counter):
                                                                                        new_box.width,
                                                                                        new_box.height))
                     print("\t\toverlap: {}".format(overlap))
-                closest_detections[overlap] = detection
-        if len(closest_detections) > 0:
-            detection = closest_detections[max(closest_detections.keys())]
-            entity.update_position(bach.geometry.Point(detection[2][0], detection[2][1]))
-            entity.update_size(detection[2][2], detection[2][3])
-            entity.frame_seen = frame_counter
-            detections.remove(detection)
+                votes[detection_id][overlap] = entity
+        detection_id = detection_id + 1
+    assigned_entities = set()
+    assigned_detections = set()
+    for detection in range(0, detection_id):
+        winner = None
+        # Select a winner
+        while len(votes[detection]) > 0:
+            winner = votes[detection][max(votes[detection].keys())]
+            if winner in assigned_entities:
+                votes[detection].pop(max(votes[detection].keys()))
+            else:
+                break
+        if len(votes[detection]) > 0:
+            assigned_entities.add(winner)
+            winner.update_position(bach.geometry.Point(detections[detection][2][0], detections[detection][2][1]))
+            winner.update_size(detections[detection][2][2], detections[detection][2][3])
+            winner.frame_seen = frame_counter
+            assigned_detections = detections[detection]
             if arguments.debug:
                 print("\tUpdate entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
-                    entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
-                    entity.bottom_right().y, entity.width, entity.height))
+                    winner.label, winner.marker, winner.top_left().x, winner.top_left().y, winner.bottom_right().x,
+                    winner.bottom_right().y, winner.width, winner.height))
+    for detection in assigned_detections:
+        detections.remove(detection)
 
 
 def video_detection(arguments, video):
