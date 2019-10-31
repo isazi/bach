@@ -131,7 +131,9 @@ def video_detection(arguments, video):
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
             unnamed_entities.append(entity)
             if arguments.debug:
-                print("\tNew entity.")
+                print("\tNew entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
+                    entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
+                    entity.bottom_right().y, entity.width, entity.height))
         # Detect ArUco markers
         aruco_markers = detector.detect_markers(frame)
         if arguments.debug:
