@@ -84,7 +84,7 @@ def detect_entities(arguments, entities, detections, frame_counter):
         for vote in votes[detection].keys():
             global_preferences[vote] = (detection, votes[detection][vote])
     sorted_preferences = list(global_preferences.keys())
-    sorted_preferences.sort()
+    sorted_preferences.sort(reverse=True)
     assigned_detections = set()
     assigned_entities = set()
     for preference in sorted_preferences:
