@@ -89,30 +89,7 @@ class Rectangle:
         """
         Measure the area of the overlap between two rectangles.
         """
-        inside_vertices = 0
-        for vertex in other.vertices:
-            if self.contains(vertex):
-                inside_vertices = inside_vertices + 1
-        width = 0
-        height = 0
-        if inside_vertices == 1:
-            width = min([other.bottom_right().x - self.top_left().x, self.bottom_right().x - other.top_left().x])
-            height = min([other.bottom_right().y - self.top_left().y, self.bottom_right().y - other.top_left().y])
-        elif inside_vertices == 2:
-            width = min(
-                [other.bottom_right().x - other.top_left().x,
-                 other.bottom_right().x - self.top_left().x,
-                 self.bottom_right().x - other.top_left().x]
-            )
-            height = min(
-                [other.bottom_right().y - other.top_left().y,
-                 other.bottom_right().y - self.top_left().y,
-                 self.bottom_right().y - other.top_left().y]
-            )
-        elif inside_vertices == 4:
-            width = other.width
-            height = other.height
-        return width * height
+        return max([overlap_area(self, other), overlap_area(other, self)])
 
 
 def distance(point_one, point_two):
@@ -120,3 +97,35 @@ def distance(point_one, point_two):
     Compute the Euclidean distance between two points.
     """
     return math.sqrt(math.pow(point_one.x - point_two.x, 2) + math.pow(point_one.y - point_two.y, 2))
+
+
+def overlap_area(rectangle_one, rectangle_two):
+    """
+    Compute the area of the overlap between two rectangles.
+    """
+    inside_vertices = 0
+    for vertex in rectangle_two.vertices:
+        if rectangle_one.contains(vertex):
+            inside_vertices = inside_vertices + 1
+    width = 0
+    height = 0
+    if inside_vertices == 1:
+        width = min([rectangle_two.bottom_right().x - rectangle_one.top_left().x,
+                     rectangle_one.bottom_right().x - rectangle_two.top_left().x])
+        height = min([rectangle_two.bottom_right().y - rectangle_one.top_left().y,
+                      rectangle_one.bottom_right().y - rectangle_two.top_left().y])
+    elif inside_vertices == 2:
+        width = min(
+            [rectangle_two.bottom_right().x - rectangle_two.top_left().x,
+             rectangle_two.bottom_right().x - rectangle_one.top_left().x,
+             rectangle_one.bottom_right().x - rectangle_two.top_left().x]
+        )
+        height = min(
+            [rectangle_two.bottom_right().y - rectangle_two.top_left().y,
+             rectangle_two.bottom_right().y - rectangle_one.top_left().y,
+             rectangle_one.bottom_right().y - rectangle_two.top_left().y]
+        )
+    elif inside_vertices == 4:
+        width = rectangle_two.width
+        height = rectangle_two.height
+    return width * height
