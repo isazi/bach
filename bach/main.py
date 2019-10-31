@@ -162,6 +162,8 @@ def video_detection(arguments, video):
                     entity.marker = label
                     named_entities[label] = entity
                     assigned_entity = entity
+                    if arguments.debug:
+                        print("\tUpdate entity \"{} {}\": named".format(entity.label, entity.marker))
                     break
             if assigned_entity is not None:
                 del aruco_markers[assigned_entity.marker]
