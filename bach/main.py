@@ -63,20 +63,20 @@ def detect_entities(arguments, entities, detections, frame_counter):
     votes = list()
     for detection in detections:
         votes.append(dict())
+        new_position = bach.geometry.Point(detection[2][0], detection[2][1])
+        new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
+        if arguments.debug:
+            print("\t\tdetection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
+                                                                               new_box.top_left().y,
+                                                                               new_box.bottom_right().x,
+                                                                               new_box.bottom_right().y,
+                                                                               new_box.width,
+                                                                               new_box.height))
         # Entities express interest for close detections
         for entity in entities:
-            new_position = bach.geometry.Point(detection[2][0], detection[2][1])
-            new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
             if entity.box.overlap(new_box):
                 overlap = entity.box.overlap_area(new_box)
-                if arguments.debug:
-                    print("\t\tdetection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
-                                                                                       new_box.top_left().y,
-                                                                                       new_box.bottom_right().x,
-                                                                                       new_box.bottom_right().y,
-                                                                                       new_box.width,
-                                                                                       new_box.height))
-                    print("\t\toverlap: {}".format(overlap))
+                print("\t\t\tentity \"{} {}\" overlap: {}".format(entity.label, entity.marker, overlap))
                 votes[detection_id][overlap] = entity
         detection_id = detection_id + 1
     assigned_entities = set()
