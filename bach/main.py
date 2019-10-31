@@ -76,7 +76,8 @@ def detect_entities(arguments, entities, detections, frame_counter):
         for entity in entities:
             if entity.box.overlap(new_box):
                 overlap = entity.box.overlap_area(new_box)
-                print("\t\t\tentity \"{} {}\" overlap: {}".format(entity.label, entity.marker, overlap))
+                if arguments.debug:
+                    print("\t\t\tentity \"{} {}\" overlap: {}".format(entity.label, entity.marker, overlap))
                 votes[detection_id][overlap] = entity
         detection_id = detection_id + 1
     global_preferences = dict()
