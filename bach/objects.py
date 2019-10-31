@@ -41,14 +41,14 @@ class Entity:
         """
         Update the position of the entity.
         """
-        self.position.x = point.x
-        self.position.y = point.y
+        self.position.x = (self.position.x + point.x) / 2
+        self.position.y = (self.position.y + point.y) / 2
         self.box.update(self.position, self.width, self.height)
 
     def update_size(self, width, height):
         """
         Update the size of the entity.
         """
-        self.width = width
-        self.height = height
+        self.width = (self.width + width) / 2
+        self.height = (self.height + height) / 2
         self.box.update(self.position, self.width, self.height)
