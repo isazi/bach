@@ -95,7 +95,7 @@ def detect_entities(arguments, entities, detections, frame_counter):
             winner.update_position(bach.geometry.Point(detections[detection][2][0], detections[detection][2][1]))
             winner.update_size(detections[detection][2][2], detections[detection][2][3])
             winner.frame_seen = frame_counter
-            assigned_detections = detections[detection]
+            assigned_detections.add(detections[detection])
             if arguments.debug:
                 print("\tUpdate entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
                     winner.label, winner.marker, winner.top_left().x, winner.top_left().y, winner.bottom_right().x,
