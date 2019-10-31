@@ -83,6 +83,16 @@ class Rectangle:
         for vertex in other.vertices:
             if self.contains(vertex):
                 return True
+        overlap_x = False
+        if ((self.top_left().x <= other.top_left().x) and (other.bottom_right().x <= self.bottom_right().x)) or \
+                ((other.top_left().x <= self.top_left().x) and (self.bottom_right().x <= other.bottom_right().x)):
+            overlap_x = True
+        overlap_y = False
+        if ((self.top_left().y <= other.top_left().y) and (other.bottom_right().y <= self.bottom_right().y)) or \
+                ((other.top_left().y <= self.top_left().y) and (self.bottom_right().y <= other.bottom_right().y)):
+            overlap_y = True
+        if overlap_x and overlap_y:
+            return True
         return False
 
     def overlap_area(self, other):
