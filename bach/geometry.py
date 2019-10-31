@@ -99,7 +99,7 @@ class Rectangle:
         """
         Measure the area of the overlap between two rectangles.
         """
-        return max([overlap_area(self, other), overlap_area(other, self)])
+        return overlap_area(self, other)
 
 
 def distance(point_one, point_two):
@@ -119,7 +119,12 @@ def overlap_area(rectangle_one, rectangle_two):
             inside_vertices = inside_vertices + 1
     width = 0
     height = 0
-    if inside_vertices == 1:
+    if inside_vertices == 0 and rectangle_one.overlap(rectangle_two):
+        width = min([rectangle_one.bottom_right().x - rectangle_one.top_left().x,
+                     rectangle_two.bottom_right().x - rectangle_two.top_left().x])
+        height = min([rectangle_one.bottom_right().y - rectangle_one.top_left().y,
+                     rectangle_two.bottom_right().y - rectangle_two.top_left().y])
+    elif inside_vertices == 1:
         width = min([rectangle_two.bottom_right().x - rectangle_one.top_left().x,
                      rectangle_one.bottom_right().x - rectangle_two.top_left().x])
         height = min([rectangle_two.bottom_right().y - rectangle_one.top_left().y,
