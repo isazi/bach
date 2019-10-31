@@ -156,16 +156,16 @@ def video_detection(arguments, video):
         if arguments.debug:
             print("ArUco detections: {}".format(len(aruco_markers)))
         for entity in unnamed_entities:
-            assigned_label = None
+            assigned_entity = None
             for label, point in aruco_markers.items():
                 if entity.position.distance(point) < arguments.marker_distance:
                     entity.marker = label
                     named_entities[label] = entity
-                    unnamed_entities.remove(entity)
-                    assigned_label = label
+                    assigned_entity = entity
                     break
-            if assigned_label is not None:
-                del aruco_markers[assigned_label]
+            if assigned_entity is not None:
+                del aruco_markers[assigned_entity.marker]
+                unnamed_entities.remove(assigned_entity)
         # Add detections to frame and eliminate ghosts
         ghosts = list()
         for label, entity in named_entities.items():
