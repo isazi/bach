@@ -79,27 +79,27 @@ def detect_entities(arguments, entities, detections, frame_counter):
                 print("\t\t\tentity \"{} {}\" overlap: {}".format(entity.label, entity.marker, overlap))
                 votes[detection_id][overlap] = entity
         detection_id = detection_id + 1
-    assigned_entities = set()
-    assigned_detections = set()
+    global_preferences = dict()
     for detection in range(0, detection_id):
-        winner = None
-        # Select a winner
-        while len(votes[detection]) > 0:
-            winner = votes[detection][max(votes[detection].keys())]
-            if winner in assigned_entities:
-                votes[detection].pop(max(votes[detection].keys()))
-            else:
-                break
-        if len(votes[detection]) > 0:
-            assigned_entities.add(winner)
-            winner.update_position(bach.geometry.Point(detections[detection][2][0], detections[detection][2][1]))
-            winner.update_size(detections[detection][2][2], detections[detection][2][3])
-            winner.frame_seen = frame_counter
+        for vote in votes[detection].keys():
+            global_preferences[vote] = (detection, votes[detection][vote])
+    sorted_preferences = list(global_preferences.keys())
+    sorted_preferences.sort()
+    assigned_detections = set()
+    assigned_entities = set()
+    for preference in sorted_preferences:
+        detection = global_preferences[preference][0]
+        entity = global_preferences[preference][1]
+        if (detections[detection] not in assigned_detections) and (entity not in assigned_entities):
             assigned_detections.add(detections[detection])
+            assigned_entities.add(entity)
+            entity.update_position(bach.geometry.Point(detections[detection][2][0], detections[detection][2][1]))
+            entity.update_size(detections[detection][2][2], detections[detection][2][3])
+            entity.frame_seen = frame_counter
             if arguments.debug:
                 print("\tUpdate entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
-                    winner.label, winner.marker, winner.top_left().x, winner.top_left().y, winner.bottom_right().x,
-                    winner.bottom_right().y, winner.width, winner.height))
+                    entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
+                    entity.bottom_right().y, entity.width, entity.height))
     for detection in assigned_detections:
         detections.remove(detection)
 
