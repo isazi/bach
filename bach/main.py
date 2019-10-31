@@ -147,7 +147,6 @@ def video_detection(arguments, video):
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
             unnamed_entities.append(entity)
-            detections.remove(detection)
             if arguments.debug:
                 print("\tNew entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
                     entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
@@ -157,13 +156,16 @@ def video_detection(arguments, video):
         if arguments.debug:
             print("ArUco detections: {}".format(len(aruco_markers)))
         for entity in unnamed_entities:
+            assigned_label = None
             for label, point in aruco_markers.items():
                 if entity.position.distance(point) < arguments.marker_distance:
                     entity.marker = label
                     named_entities[label] = entity
                     unnamed_entities.remove(entity)
-                    del aruco_markers[label]
+                    assigned_label = label
                     break
+            if assigned_label is not None:
+                del aruco_markers[assigned_label]
         # Add detections to frame and eliminate ghosts
         ghosts = list()
         for label, entity in named_entities.items():
