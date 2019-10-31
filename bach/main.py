@@ -130,6 +130,7 @@ def video_detection(arguments, video):
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
             unnamed_entities.append(entity)
+            detections.remove(detection)
             if arguments.debug:
                 print("\tNew entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
                     entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
