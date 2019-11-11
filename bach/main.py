@@ -34,8 +34,6 @@ def command_line():
                         type=int, default=25)
     parser.add_argument("--marker_distance", help="Maximum distance of a marker from an entity",
                         type=int, default=25)
-    parser.add_argument("--max_distance", help="Maximum distance for the new position of an entity",
-                        type=int, default=25)
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
     # Debug
