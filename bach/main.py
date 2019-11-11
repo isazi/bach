@@ -1,5 +1,4 @@
 import argparse
-import time
 import cv2
 from bach.darknet import set_gpu
 import bach.detector
@@ -186,7 +185,7 @@ def video_detection(arguments, video, output_file):
             print("# Unnamed entities: {}".format(len(unnamed_entities)))
         # Store and show output
         for entity in named_entities.values():
-            output_file.write("{} {} {} {}\n".format(time.time(), entity.marker, entity.position.x, entity.position.y))
+            output_file.write("{} {} {} {}\n".format(frame_counter, entity.marker, entity.position.x, entity.position.y))
         if arguments.video_output:
             video_output.write(frame)
         if arguments.show_video:
