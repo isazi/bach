@@ -60,6 +60,12 @@ def initialize_input(arguments):
     return video
 
 
+def initialize_output(name, width, height, fps):
+    video = bach.video.VideoWriter("{}.mp4".format(name, width, height, fps))
+    video.initialize()
+    return video
+
+
 def detect_entities(arguments, entities, detections, frame_counter):
     detection_id = 0
     votes = list()
@@ -109,15 +115,11 @@ def video_detection(arguments, video, output_file):
         print("Impossible to initialize darknet.")
         exit(-1)
     video_output = None
-    if arguments.video_output:
-        video_output = bach.video.VideoWriter("{}.mp4".format(arguments.video_output),
-                                              width=video.width,
-                                              height=video.height,
-                                              fps=video.fps)
-        video_output.initialize()
-    if not video.ready():
-        print("Impossible to open video source.")
-        exit(-1)
+    if arguments.video_output is not None:
+        video_output = initialize_output(arguments.video_output, video.width, video.height, video.fps)
+    store_input = None
+    if arguments.store_input is not None:
+        store_input = initialize_output(arguments.store_input, video.width, video.height, video.fps)
     frame_counter = 0
     named_entities = dict()
     unnamed_entities = list()
@@ -127,6 +129,8 @@ def video_detection(arguments, video, output_file):
         except ValueError as err:
             print("Error: ".format(str(err)))
             break
+        if store_input is not None:
+            store_input.write(frame)
         frame_counter = frame_counter + 1
         if arguments.debug:
             print("# Frame: {}".format(frame_counter))
@@ -220,6 +224,9 @@ def frame_extraction(arguments, video):
 def __main__():
     arguments = command_line()
     video = initialize_input(arguments)
+    if not video.ready():
+        print("Impossible to open video source.")
+        exit(-1)
     if arguments.action == "detection":
         if arguments.output_file is None:
             print("Impossible to save output.")
