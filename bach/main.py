@@ -185,7 +185,10 @@ def video_detection(arguments, video, output_file):
             print("# Unnamed entities: {}".format(len(unnamed_entities)))
         # Store and show output
         for entity in named_entities.values():
-            output_file.write("{} {} {} {}\n".format(frame_counter, entity.marker, entity.position.x, entity.position.y))
+            output_file.write("{} {} {} {}\n".format(frame_counter,
+                                                     entity.marker,
+                                                     entity.position.x,
+                                                     entity.position.y))
         if arguments.video_output:
             video_output.write(frame)
         if arguments.show_video:
@@ -218,7 +221,7 @@ def __main__():
     video = initialize_input(arguments)
     if arguments.action == "detection":
         output_file = open(arguments.output_file, "w")
-        output_file.write("# time id x y")
+        output_file.write("# time id x y\n")
         video_detection(arguments, video, output_file)
         output_file.close()
     elif arguments.action == "frame_extraction":
