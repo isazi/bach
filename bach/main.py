@@ -5,7 +5,7 @@ import bach.detector
 import bach.video
 import bach.graphics
 import bach.geometry
-import bach.objects
+import bach.entities
 
 
 def command_line():
@@ -141,8 +141,8 @@ def video_detection(arguments, video):
         detect_entities(arguments, unnamed_entities, detections, frame_counter)
         # New entities
         for detection in detections:
-            entity = bach.objects.Entity(label=detection[0], color=detector.colors[detection[0]],
-                                         width=detection[2][2], height=detection[2][3], seen=frame_counter)
+            entity = bach.entities.Entity(label=detection[0], color=detector.colors[detection[0]],
+                                          width=detection[2][2], height=detection[2][3], seen=frame_counter)
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
             unnamed_entities.append(entity)
