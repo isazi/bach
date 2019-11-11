@@ -61,7 +61,7 @@ def initialize_input(arguments):
 
 
 def initialize_output(name, width, height, fps):
-    video = bach.video.VideoWriter("{}.mp4".format(name, width, height, fps))
+    video = bach.video.VideoWriter("{}.mp4".format(name), width, height, fps)
     video.initialize()
     return video
 
@@ -115,10 +115,10 @@ def video_detection(arguments, video, output_file):
         print("Impossible to initialize darknet.")
         exit(-1)
     video_output = None
-    if arguments.video_output is not None:
+    if arguments.video_output:
         video_output = initialize_output(arguments.video_output, video.width, video.height, video.fps)
     store_input = None
-    if arguments.store_input is not None:
+    if arguments.store_input:
         store_input = initialize_output(arguments.store_input, video.width, video.height, video.fps)
     frame_counter = 0
     named_entities = dict()
@@ -129,7 +129,7 @@ def video_detection(arguments, video, output_file):
         except ValueError as err:
             print("Error: ".format(str(err)))
             break
-        if store_input is not None:
+        if arguments.store_input:
             store_input.write(frame)
         frame_counter = frame_counter + 1
         if arguments.debug:
