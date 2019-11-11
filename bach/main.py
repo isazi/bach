@@ -1,4 +1,5 @@
 import argparse
+import time
 import cv2
 from bach.darknet import set_gpu
 import bach.detector
@@ -35,6 +36,7 @@ def command_line():
                         type=int, default=25)
     parser.add_argument("--marker_distance", help="Maximum distance of a marker from an entity",
                         type=int, default=25)
+    parser.add_argument("--output_file", help="File where BACH output is stored", type=str)
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
     parser.add_argument("--frame_file", help="The base file name for the stored frames", type=str)
@@ -99,7 +101,7 @@ def detect_entities(arguments, entities, detections, frame_counter):
         detections.remove(detection)
 
 
-def video_detection(arguments, video):
+def video_detection(arguments, video, output_file):
     set_gpu(arguments.gpu)
     detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
     return_code = detector.initialize()
@@ -183,6 +185,8 @@ def video_detection(arguments, video):
             print("# Entities: {}".format(len(named_entities)))
             print("# Unnamed entities: {}".format(len(unnamed_entities)))
         # Store and show output
+        for entity in named_entities:
+            output_file.write("{} {} {} {}".format(time.time(), entity.marker, entity.position.x, entity.position.y))
         if arguments.video_output:
             video_output.write(frame)
         if arguments.show_video:
@@ -214,7 +218,10 @@ def __main__():
     arguments = command_line()
     video = initialize_input(arguments)
     if arguments.action == "detection":
-        video_detection(arguments, video)
+        output_file = open(arguments.output_file, "w")
+        output_file.write("# time id x y")
+        video_detection(arguments, video, output_file)
+        output_file.close()
     elif arguments.action == "frame_extraction":
         frame_extraction(arguments, video)
     return 0
