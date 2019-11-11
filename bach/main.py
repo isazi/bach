@@ -60,7 +60,6 @@ def detect_entities(arguments, entities, detections, frame_counter):
     detection_id = 0
     votes = list()
     for detection in detections:
-        votes.append(dict())
         new_position = bach.geometry.Point(detection[2][0], detection[2][1])
         new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
         if arguments.debug:
@@ -76,19 +75,14 @@ def detect_entities(arguments, entities, detections, frame_counter):
                 overlap = entity.box.overlap_area(new_box)
                 if arguments.debug:
                     print("\t\t\tentity \"{} {}\" overlap: {}".format(entity.label, entity.marker, overlap))
-                votes[detection_id][overlap] = entity
+                votes.append((overlap, entity, detection_id))
         detection_id = detection_id + 1
-    global_preferences = dict()
-    for detection in range(0, detection_id):
-        for vote in votes[detection].keys():
-            global_preferences[vote] = (detection, votes[detection][vote])
-    sorted_preferences = list(global_preferences.keys())
-    sorted_preferences.sort(reverse=True)
+    votes.sort(key=lambda item: item[0], reverse=True)
     assigned_detections = set()
     assigned_entities = set()
-    for preference in sorted_preferences:
-        detection = global_preferences[preference][0]
-        entity = global_preferences[preference][1]
+    for vote in votes:
+        detection = vote[2]
+        entity = vote[1]
         if (detections[detection] not in assigned_detections) and (entity not in assigned_entities):
             assigned_detections.add(detections[detection])
             assigned_entities.add(entity)
