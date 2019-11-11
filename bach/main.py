@@ -1,11 +1,11 @@
 import argparse
 import cv2
-from bach.darknet import  set_gpu
+from bach.darknet import set_gpu
 import bach.detector
 import bach.video
 import bach.graphics
 import bach.geometry
-import bach.objects
+import bach.entities
 
 
 def command_line():
@@ -30,8 +30,8 @@ def command_line():
     # Detection
     parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
     parser.add_argument("--ghost_threshold",
-                        help="Fraction of total frames an entity has to be in to be considered real",
-                        type=float, default=0.90)
+                        help="Number of frames without a new detection before the entity becomes a ghost",
+                        type=int, default=25)
     parser.add_argument("--marker_distance", help="Maximum distance of a marker from an entity",
                         type=int, default=25)
     # Frame extraction
@@ -56,6 +56,47 @@ def initialize_input(arguments):
     return video
 
 
+def detect_entities(arguments, entities, detections, frame_counter):
+    detection_id = 0
+    votes = list()
+    for detection in detections:
+        new_position = bach.geometry.Point(detection[2][0], detection[2][1])
+        new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
+        if arguments.debug:
+            print("\t\tdetection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
+                                                                               new_box.top_left().y,
+                                                                               new_box.bottom_right().x,
+                                                                               new_box.bottom_right().y,
+                                                                               new_box.width,
+                                                                               new_box.height))
+        # Entities express interest for close detections
+        for entity in entities:
+            if entity.box.overlap(new_box):
+                overlap = entity.box.overlap_area(new_box)
+                if arguments.debug:
+                    print("\t\t\tentity \"{} {}\" overlap: {}".format(entity.label, entity.marker, overlap))
+                votes.append((overlap, entity, detection_id))
+        detection_id = detection_id + 1
+    votes.sort(key=lambda item: item[0], reverse=True)
+    assigned_detections = set()
+    assigned_entities = set()
+    for vote in votes:
+        detection = vote[2]
+        entity = vote[1]
+        if (detections[detection] not in assigned_detections) and (entity not in assigned_entities):
+            assigned_detections.add(detections[detection])
+            assigned_entities.add(entity)
+            entity.update_position(bach.geometry.Point(detections[detection][2][0], detections[detection][2][1]))
+            entity.update_size(detections[detection][2][2], detections[detection][2][3])
+            entity.frame_seen = frame_counter
+            if arguments.debug:
+                print("\tUpdate entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
+                    entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
+                    entity.bottom_right().y, entity.width, entity.height))
+    for detection in assigned_detections:
+        detections.remove(detection)
+
+
 def video_detection(arguments, video):
     set_gpu(arguments.gpu)
     detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
@@ -74,7 +115,8 @@ def video_detection(arguments, video):
         print("Impossible to open video source.")
         exit(-1)
     frame_counter = 0
-    entities = list()
+    named_entities = dict()
+    unnamed_entities = list()
     while video.ready():
         try:
             frame = video.get_frame()
@@ -82,51 +124,70 @@ def video_detection(arguments, video):
             print("Error: ".format(str(err)))
             break
         frame_counter = frame_counter + 1
-        # Detect entities
+        if arguments.debug:
+            print("Frame: {}".format(frame_counter))
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         if arguments.debug:
-            print("Entity detections: {}".format(len(detections)))
-        for entity in entities:
-            for detection in detections:
-                new_position = bach.geometry.Point(detection[2][0], detection[2][1])
-                if entity.contains(new_position):
-                    entity.update_position(new_position)
-                    entity.update_size(detection[2][2], detection[2][3])
-                    entity.detections = entity.detections + 1
-                    detections.remove(detection)
-                    break
+            print("Darknet detections: {}".format(len(detections)))
+        # Detect named entities
+        detect_entities(arguments, named_entities.values(), detections, frame_counter)
+        # Detect unnamed entities
+        detect_entities(arguments, unnamed_entities, detections, frame_counter)
+        # New entities
         for detection in detections:
-            entity = bach.objects.Entity(label=detection[0], color=detector.colors[detection[0]],
-                                         width=detection[2][2], height=detection[2][3], detections=frame_counter)
+            entity = bach.entities.Entity(label=detection[0], color=detector.colors[detection[0]],
+                                          width=detection[2][2], height=detection[2][3], seen=frame_counter)
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
-            entities.append(entity)
+            entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
+            unnamed_entities.append(entity)
+            if arguments.debug:
+                print("\tNew entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
+                    entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
+                    entity.bottom_right().y, entity.width, entity.height))
         # Detect ArUco markers
         aruco_markers = detector.detect_markers(frame)
         if arguments.debug:
             print("ArUco detections: {}".format(len(aruco_markers)))
-        for entity in entities:
-            if entity.marker == -1:
-                for label, point in aruco_markers.items():
-                    if entity.position.distance(point) < arguments.marker_distance:
-                        entity.marker = label
-                        del aruco_markers[label]
-                        break
+        for entity in unnamed_entities:
+            assigned_entity = None
+            for label, point in aruco_markers.items():
+                if entity.position.distance(point) < arguments.marker_distance:
+                    entity.marker = label
+                    named_entities[label] = entity
+                    assigned_entity = entity
+                    if arguments.debug:
+                        print("\tUpdate entity \"{} {}\": named".format(entity.label, entity.marker))
+                    break
+            if assigned_entity is not None:
+                del aruco_markers[assigned_entity.marker]
+                unnamed_entities.remove(assigned_entity)
         # Add detections to frame and eliminate ghosts
-        for entity in entities:
-            if entity.marker != -1:
+        ghosts = list()
+        for label, entity in named_entities.items():
+            if label != -1:
                 bach.graphics.draw_bounding_box(frame, entity)
-            if (entity.detections / frame_counter) < arguments.ghost_threshold:
-                entities.remove(entity)
+            if entity.frame_seen < frame_counter - arguments.ghost_threshold:
+                ghosts.append(label)
+        for ghost in ghosts:
+            if arguments.debug:
+                print("\tGhost \"{} {}\" deleted.".format(named_entities[ghost].label, named_entities[ghost].marker))
+            del named_entities[ghost]
+        for entity in unnamed_entities:
+            if entity.frame_seen < frame_counter - arguments.ghost_threshold:
                 if arguments.debug:
-                    print("Ghost deleted.")
+                    print("\tGhost deleted.")
+                unnamed_entities.remove(entity)
         if arguments.debug:
-            print("Entities: {}".format(len(entities)))
+            print("Entities: {}".format(len(named_entities)))
+            print("Unnamed entities: {}".format(len(unnamed_entities)))
         # Store and show output
         if arguments.output:
             output.write(frame)
         cv2.imshow("BACH", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+        if arguments.debug:
+            print()
     cv2.destroyAllWindows()
 
 

@@ -7,8 +7,8 @@ def draw_bounding_box(image, entity):
     """
     top_left = entity.top_left()
     bottom_right = entity.bottom_right()
-    cv2.rectangle(image, (top_left.x, top_left.y), (bottom_right.x, bottom_right.y), entity.color, 2)
-    label_point = (top_left.x, top_left.y - 10)
+    cv2.rectangle(image, (int(top_left.x), int(top_left.y)), (int(bottom_right.x), int(bottom_right.y)), entity.color, 2)
+    label_point = (int(top_left.x), int(top_left.y) - 10)
     cv2.putText(image,
                 "{} {}".format(entity.label, entity.marker),
                 label_point,
