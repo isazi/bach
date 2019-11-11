@@ -23,6 +23,7 @@ def command_line():
     parser.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
     parser.add_argument("--fps", help="Set the frames per second", type=int, default=25)
     parser.add_argument("--video_output", help="File where to store the output video", type=str)
+    parser.add_argument("--store_input", help="File where to save the unmodified input", type=str)
     # Darknet
     parser.add_argument("-c", "--config_path", help="File containing darknet configuration", type=str)
     parser.add_argument("-m", "--meta_path", help="File containing darknet metadata", type=str)
@@ -220,6 +221,9 @@ def __main__():
     arguments = command_line()
     video = initialize_input(arguments)
     if arguments.action == "detection":
+        if arguments.output_file is None:
+            print("Impossible to save output.")
+            exit(-1)
         output_file = open(arguments.output_file, "w")
         output_file.write("# time id x y\n")
         video_detection(arguments, video, output_file)
