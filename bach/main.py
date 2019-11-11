@@ -63,18 +63,18 @@ def detect_entities(arguments, entities, detections, frame_counter):
         new_position = bach.geometry.Point(detection[2][0], detection[2][1])
         new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
         if arguments.debug:
-            print("\t\tdetection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
-                                                                               new_box.top_left().y,
-                                                                               new_box.bottom_right().x,
-                                                                               new_box.bottom_right().y,
-                                                                               new_box.width,
-                                                                               new_box.height))
+            print("\t\t# detection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
+                                                                                 new_box.top_left().y,
+                                                                                 new_box.bottom_right().x,
+                                                                                 new_box.bottom_right().y,
+                                                                                 new_box.width,
+                                                                                 new_box.height))
         # Entities express interest for close detections
         for entity in entities:
             if entity.box.overlap(new_box):
                 overlap = entity.box.overlap_area(new_box)
                 if arguments.debug:
-                    print("\t\t\tentity \"{} {}\" overlap: {}".format(entity.label, entity.marker, overlap))
+                    print("\t\t\t# entity \"{} {}\" overlap: {}".format(entity.label, entity.marker, overlap))
                 votes.append((overlap, entity, detection_id))
         detection_id = detection_id + 1
     votes.sort(key=lambda item: item[0], reverse=True)
@@ -90,7 +90,7 @@ def detect_entities(arguments, entities, detections, frame_counter):
             entity.update_size(detections[detection][2][2], detections[detection][2][3])
             entity.frame_seen = frame_counter
             if arguments.debug:
-                print("\tUpdate entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
+                print("\t# Update entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
                     entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
                     entity.bottom_right().y, entity.width, entity.height))
     for detection in assigned_detections:
@@ -125,10 +125,10 @@ def video_detection(arguments, video):
             break
         frame_counter = frame_counter + 1
         if arguments.debug:
-            print("Frame: {}".format(frame_counter))
+            print("# Frame: {}".format(frame_counter))
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         if arguments.debug:
-            print("Darknet detections: {}".format(len(detections)))
+            print("# Darknet detections: {}".format(len(detections)))
         # Detect named entities
         detect_entities(arguments, named_entities.values(), detections, frame_counter)
         # Detect unnamed entities
@@ -141,13 +141,13 @@ def video_detection(arguments, video):
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
             unnamed_entities.append(entity)
             if arguments.debug:
-                print("\tNew entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
+                print("\t# New entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
                     entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
                     entity.bottom_right().y, entity.width, entity.height))
         # Detect ArUco markers
         aruco_markers = detector.detect_markers(frame)
         if arguments.debug:
-            print("ArUco detections: {}".format(len(aruco_markers)))
+            print("# ArUco detections: {}".format(len(aruco_markers)))
         for entity in unnamed_entities:
             assigned_entity = None
             for label, point in aruco_markers.items():
@@ -156,7 +156,7 @@ def video_detection(arguments, video):
                     named_entities[label] = entity
                     assigned_entity = entity
                     if arguments.debug:
-                        print("\tUpdate entity \"{} {}\": named".format(entity.label, entity.marker))
+                        print("\t# Update entity \"{} {}\": named".format(entity.label, entity.marker))
                     break
             if assigned_entity is not None:
                 del aruco_markers[assigned_entity.marker]
@@ -170,16 +170,16 @@ def video_detection(arguments, video):
                 ghosts.append(label)
         for ghost in ghosts:
             if arguments.debug:
-                print("\tGhost \"{} {}\" deleted.".format(named_entities[ghost].label, named_entities[ghost].marker))
+                print("\t# Ghost \"{} {}\" deleted.".format(named_entities[ghost].label, named_entities[ghost].marker))
             del named_entities[ghost]
         for entity in unnamed_entities:
             if entity.frame_seen < frame_counter - arguments.ghost_threshold:
                 if arguments.debug:
-                    print("\tGhost deleted.")
+                    print("\t# Ghost deleted.")
                 unnamed_entities.remove(entity)
         if arguments.debug:
-            print("Entities: {}".format(len(named_entities)))
-            print("Unnamed entities: {}".format(len(unnamed_entities)))
+            print("# Entities: {}".format(len(named_entities)))
+            print("# Unnamed entities: {}".format(len(unnamed_entities)))
         # Store and show output
         if arguments.output:
             output.write(frame)
