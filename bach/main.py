@@ -185,7 +185,7 @@ def video_detection(arguments, video, output_file):
             print("# Entities: {}".format(len(named_entities)))
             print("# Unnamed entities: {}".format(len(unnamed_entities)))
         # Store and show output
-        for entity in named_entities:
+        for entity in named_entities.values():
             output_file.write("{} {} {} {}".format(time.time(), entity.marker, entity.position.x, entity.position.y))
         if arguments.video_output:
             video_output.write(frame)
