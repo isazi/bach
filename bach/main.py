@@ -22,7 +22,7 @@ def command_line():
     parser.add_argument("--width", help="Webcam's resolution width", type=int, default=640)
     parser.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
     parser.add_argument("--fps", help="Set the frames per second", type=int, default=25)
-    parser.add_argument("--output", help="File where to save the output video", type=str)
+    parser.add_argument("--video_output", help="File where to store the output video", type=str)
     # Darknet
     parser.add_argument("-c", "--config_path", help="File containing darknet configuration", type=str)
     parser.add_argument("-m", "--meta_path", help="File containing darknet metadata", type=str)
@@ -36,6 +36,7 @@ def command_line():
                         type=int, default=25)
     # Frame extraction
     parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
+    parser.add_argument("--frame_file", help="The base file name for the stored frames", type=str)
     # Debug
     parser.add_argument("--debug", help="Debug mode", action="store_true")
     return parser.parse_args()
@@ -104,13 +105,13 @@ def video_detection(arguments, video):
     if not return_code:
         print("Impossible to initialize darknet.")
         exit(-1)
-    output = None
-    if arguments.output:
-        output = bach.video.VideoWriter("{}.mp4".format(arguments.output),
-                                        width=video.width,
-                                        height=video.height,
-                                        fps=video.fps)
-        output.initialize()
+    video_output = None
+    if arguments.video_output:
+        video_output = bach.video.VideoWriter("{}.mp4".format(arguments.video_output),
+                                              width=video.width,
+                                              height=video.height,
+                                              fps=video.fps)
+        video_output.initialize()
     if not video.ready():
         print("Impossible to open video source.")
         exit(-1)
@@ -181,8 +182,8 @@ def video_detection(arguments, video):
             print("# Entities: {}".format(len(named_entities)))
             print("# Unnamed entities: {}".format(len(unnamed_entities)))
         # Store and show output
-        if arguments.output:
-            output.write(frame)
+        if arguments.video_output:
+            video_output.write(frame)
         cv2.imshow("BACH", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -203,7 +204,7 @@ def frame_extraction(arguments, video):
             print("Error: ".format(str(err)))
             break
         if frame_counter % arguments.reduction == 0:
-            cv2.imwrite("{}_{}.png".format(arguments.output, frame_counter), frame)
+            cv2.imwrite("{}_{}.png".format(arguments.frame_file, frame_counter), frame)
         frame_counter = frame_counter + 1
 
 
