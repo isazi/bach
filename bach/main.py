@@ -200,12 +200,12 @@ def video_detection(arguments, video, output_file):
                                                                      encounter.participants[1].mark))
         # Store and show output
         for entity in named_entities.values():
-            output_file.write("{} {} {} {}\n".format(frame_counter,
-                                                     entity.marker,
-                                                     entity.position.x,
-                                                     entity.position.y,
-                                                     entity.width,
-                                                     entity.height))
+            output_file.write("{} {} {} {} {} {}\n".format(frame_counter,
+                                                           entity.marker,
+                                                           entity.position.x,
+                                                           entity.position.y,
+                                                           entity.width,
+                                                           entity.height))
         if arguments.video_output:
             video_output.write(frame)
         if arguments.show_video:
