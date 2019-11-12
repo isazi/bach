@@ -6,6 +6,7 @@ import bach.video
 import bach.graphics
 import bach.geometry
 import bach.entities
+import bach.behavior
 
 
 def command_line():
@@ -123,6 +124,7 @@ def video_detection(arguments, video, output_file):
     frame_counter = 0
     named_entities = dict()
     unnamed_entities = list()
+    encounters = list()
     while video.ready():
         try:
             frame = video.get_frame()
@@ -188,6 +190,14 @@ def video_detection(arguments, video, output_file):
         if arguments.debug:
             print("# Entities: {}".format(len(named_entities)))
             print("# Unnamed entities: {}".format(len(unnamed_entities)))
+        # Behavior detection
+        bach.behavior.encounter(frame_counter, named_entities.values(), encounters)
+        for encounter in encounters:
+            if arguments.debug:
+                print("\t# Encounter: (\"{} {}\", \"{} {}\")".format(encounter.participants[0].label,
+                                                                     encounter.participants[0].mark,
+                                                                     encounter.participants[1].label,
+                                                                     encounter.participants[1].mark))
         # Store and show output
         for entity in named_entities.values():
             output_file.write("{} {} {} {}\n".format(frame_counter,
