@@ -75,11 +75,11 @@ def detect_entities(arguments, entities, detections, frame_counter):
         new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
         if arguments.debug:
             print("\t# Detection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
-                                                                                 new_box.top_left().y,
-                                                                                 new_box.bottom_right().x,
-                                                                                 new_box.bottom_right().y,
-                                                                                 new_box.width,
-                                                                                 new_box.height))
+                                                                               new_box.top_left().y,
+                                                                               new_box.bottom_right().x,
+                                                                               new_box.bottom_right().y,
+                                                                               new_box.width,
+                                                                               new_box.height))
         # Entities express interest for close detections
         for entity in entities:
             if entity.box.overlap(new_box):
@@ -194,10 +194,11 @@ def video_detection(arguments, video, output_file):
         bach.behavior.encounter(frame_counter, named_entities.values(), encounters)
         for encounter in encounters:
             if arguments.debug:
-                print("\t# Encounter: (\"{} {}\", \"{} {}\")".format(encounter.participants[0].label,
-                                                                     encounter.participants[0].marker,
-                                                                     encounter.participants[1].label,
-                                                                     encounter.participants[1].marker))
+                print("\t# Encounter: (\"{} {}\", \"{} {}\"), duration: {}".format(encounter.participants[0].label,
+                                                                                   encounter.participants[0].marker,
+                                                                                   encounter.participants[1].label,
+                                                                                   encounter.participants[1].marker,
+                                                                                   encounter.last - encounter.begin))
             if encounter.last < frame_counter - arguments.ghost_threshold:
                 encounters.remove(encounter)
         # Store and show output
