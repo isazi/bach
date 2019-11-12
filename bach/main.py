@@ -193,7 +193,9 @@ def video_detection(arguments, video, output_file):
             output_file.write("{} {} {} {}\n".format(frame_counter,
                                                      entity.marker,
                                                      entity.position.x,
-                                                     entity.position.y))
+                                                     entity.position.y,
+                                                     entity.width,
+                                                     entity.height))
         if arguments.video_output:
             video_output.write(frame)
         if arguments.show_video:
@@ -232,7 +234,7 @@ def __main__():
             print("Impossible to save output.")
             exit(-1)
         output_file = open(arguments.output_file, "w")
-        output_file.write("# time id x y\n")
+        output_file.write("# time id x y width height\n")
         video_detection(arguments, video, output_file)
         output_file.close()
     elif arguments.action == "frame_extraction":
