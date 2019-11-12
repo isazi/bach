@@ -195,9 +195,9 @@ def video_detection(arguments, video, output_file):
         for encounter in encounters:
             if arguments.debug:
                 print("\t# Encounter: (\"{} {}\", \"{} {}\")".format(encounter.participants[0].label,
-                                                                     encounter.participants[0].mark,
+                                                                     encounter.participants[0].marker,
                                                                      encounter.participants[1].label,
-                                                                     encounter.participants[1].mark))
+                                                                     encounter.participants[1].marker))
         # Store and show output
         for entity in named_entities.values():
             output_file.write("{} {} {} {} {} {}\n".format(frame_counter,
