@@ -9,7 +9,7 @@ class Entity:
         self.color = color
         self.width = width
         self.height = height
-        self.frame_seen = seen
+        self.last_seen = seen
         self.position = None
         self.box = None
 

@@ -174,14 +174,14 @@ def video_detection(arguments, video, output_file):
         for label, entity in named_entities.items():
             if label != -1:
                 bach.graphics.draw_bounding_box(frame, entity)
-            if entity.frame_seen < frame_counter - arguments.ghost_threshold:
+            if entity.last_seen < frame_counter - arguments.ghost_threshold:
                 ghosts.append(label)
         for ghost in ghosts:
             if arguments.debug:
                 print("\t# Ghost \"{} {}\" deleted.".format(named_entities[ghost].label, named_entities[ghost].marker))
             del named_entities[ghost]
         for entity in unnamed_entities:
-            if entity.frame_seen < frame_counter - arguments.ghost_threshold:
+            if entity.last_seen < frame_counter - arguments.ghost_threshold:
                 if arguments.debug:
                     print("\t# Ghost deleted.")
                 unnamed_entities.remove(entity)
