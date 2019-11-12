@@ -1,3 +1,5 @@
+from math import isclose
+
 
 class Entity:
     def __init__(self, label="", marker=-1, color=(0, 0, 0), width=1, height=1, seen=None):
@@ -12,6 +14,15 @@ class Entity:
         self.last_seen = seen
         self.position = None
         self.box = None
+
+    def same(self, other):
+        """
+        Check if two entities are the same.
+        """
+        if self.label == other.label and self.marker == other.marker:
+            if isclose(self.position.x, other.position.x) and isclose(self.position.y, other.position.y):
+                return True
+        return False
 
     def top_left(self):
         """
