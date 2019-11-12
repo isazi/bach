@@ -192,6 +192,8 @@ def video_detection(arguments, video, output_file):
             print("# Unnamed entities: {}".format(len(unnamed_entities)))
         # Behavior detection
         bach.behavior.encounter(frame_counter, named_entities.values(), encounters)
+        if arguments.debug:
+            print("# Encounters: {}".format(len(encounters)))
         for encounter in encounters:
             if arguments.debug:
                 print("\t# Encounter: (\"{} {}\", \"{} {}\"), duration: {}".format(encounter.participants[0].label,
