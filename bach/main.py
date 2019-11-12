@@ -198,6 +198,8 @@ def video_detection(arguments, video, output_file):
                                                                      encounter.participants[0].marker,
                                                                      encounter.participants[1].label,
                                                                      encounter.participants[1].marker))
+            if encounter.last < frame_counter - arguments.ghost_threshold:
+                encounters.remove(encounter)
         # Store and show output
         for entity in named_entities.values():
             output_file.write("{} {} {} {} {} {}\n".format(frame_counter,
