@@ -12,6 +12,7 @@ class Entity:
         self.width = width
         self.height = height
         self.last_seen = seen
+        self.detections = 1
         self.position = None
         self.box = None
 
