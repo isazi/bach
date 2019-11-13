@@ -49,18 +49,26 @@ class Entity:
         """
         return self.box.overlap(other.box)
 
-    def update_position(self, point):
+    def update_position(self, point, average=False):
         """
         Update the position of the entity.
         """
-        self.position.x = self.position.x + ((point.x - self.position.x) / self.detections)
-        self.position.y = self.position.y + ((point.y - self.position.y) / self.detections)
+        if average:
+            self.position.x = self.position.x + ((point.x - self.position.x) / self.detections)
+            self.position.y = self.position.y + ((point.y - self.position.y) / self.detections)
+        else:
+            self.position.x = point.x
+            self.position.y = point.y
         self.box.update(self.position, self.width, self.height)
 
-    def update_size(self, width, height):
+    def update_size(self, width, height, average=False):
         """
         Update the size of the entity.
         """
-        self.width = self.width + ((width - self.width) / self.detections)
-        self.height = self.height + ((height - self.height) / self.detections)
+        if average:
+            self.width = self.width + ((width - self.width) / self.detections)
+            self.height = self.height + ((height - self.height) / self.detections)
+        else:
+            self.width = width
+            self.height = height
         self.box.update(self.position, self.width, self.height)
