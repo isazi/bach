@@ -97,9 +97,9 @@ def detect_entities(arguments, entities, detections, frame_counter):
         if (detections[detection] not in assigned_detections) and (entity not in assigned_entities):
             assigned_detections.add(detections[detection])
             assigned_entities.add(entity)
+            entity.detections = entity.detections + 1
             entity.update_position(bach.geometry.Point(detections[detection][2][0], detections[detection][2][1]))
             entity.update_size(detections[detection][2][2], detections[detection][2][3])
-            entity.detections = entity.detections + 1
             entity.last_seen = frame_counter
             if arguments.debug:
                 print("\t# Update entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
