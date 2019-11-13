@@ -11,11 +11,6 @@ import bach.behavior
 
 def command_line():
     parser = argparse.ArgumentParser()
-    # Actions
-    parser.add_argument("--action",
-                        help="The action to perform",
-                        choices=["detection", "frame_extraction"],
-                        required=True)
     # Devices
     parser.add_argument("--gpu", help="ID of the GPU to use for Darknet", type=int, default=0)
     parser.add_argument("--webcam", help="The ID of the webcam", type=int)
@@ -38,9 +33,6 @@ def command_line():
     parser.add_argument("--marker_distance", help="Maximum distance of a marker from an entity",
                         type=int, default=25)
     parser.add_argument("--output_file", help="File where BACH output is stored", type=str)
-    # Frame extraction
-    parser.add_argument("--reduction", help="The number of frames skipped for every frame stored", type=int, default=1)
-    parser.add_argument("--frame_file", help="The base file name for the stored frames", type=str)
     # Debug
     parser.add_argument("--debug", help="Debug mode", action="store_true")
     return parser.parse_args()
@@ -223,38 +215,19 @@ def video_detection(arguments, video, output_file):
     cv2.destroyAllWindows()
 
 
-def frame_extraction(arguments, video):
-    if not video.ready():
-        print("Impossible to open video source.")
-        exit(-1)
-    frame_counter = 0
-    while video.ready():
-        try:
-            frame = video.get_frame()
-        except ValueError as err:
-            print("Error: ".format(str(err)))
-            break
-        if frame_counter % arguments.reduction == 0:
-            cv2.imwrite("{}_{}.png".format(arguments.frame_file, frame_counter), frame)
-        frame_counter = frame_counter + 1
-
-
 def __main__():
     arguments = command_line()
     video = initialize_input(arguments)
     if not video.ready():
         print("Impossible to open video source.")
         exit(-1)
-    if arguments.action == "detection":
-        if arguments.output_file is None:
-            print("Impossible to save output.")
-            exit(-1)
-        output_file = open(arguments.output_file, "w")
-        output_file.write("# time id x y width height\n")
-        video_detection(arguments, video, output_file)
-        output_file.close()
-    elif arguments.action == "frame_extraction":
-        frame_extraction(arguments, video)
+    if arguments.output_file is None:
+        print("Impossible to save output.")
+        exit(-1)
+    output_file = open(arguments.output_file, "w")
+    output_file.write("# time id x y width height\n")
+    video_detection(arguments, video, output_file)
+    output_file.close()
     return 0
 
 
