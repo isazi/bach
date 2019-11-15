@@ -30,7 +30,7 @@ def analysis(arguments, input_file):
             entities[items[1]].update_size(items[4], items[5])
         else:
             entity = bach.entities.Entity(marker=items[1], width=items[4], height=items[5], seen=frame_counter)
-            entity.update_position(new_point)
+            entity.position = new_point
             entities[items[1]] = entity
     # Behavior detection
     bach.behavior.encounter(frame_counter, entities.values(), encounters)
