@@ -7,20 +7,31 @@ class Entity:
         Default constructor.
         """
         self.label = label
-        self.marker = marker
         self.color = color
         self.width = width
         self.height = height
         self.last_seen = seen
         self.detections = 1
+        self.markers = dict()
+        self.markers[marker] = 1
         self.position = None
         self.box = None
+
+    def marker(self):
+        """
+        Return the current best marker.
+        """
+        max_marker = max(self.markers.values())
+        for key, value in self.markers.items():
+            if value == max_marker:
+                return key
+        return None
 
     def same(self, other):
         """
         Check if two entities are the same.
         """
-        if self.label == other.label and self.marker == other.marker:
+        if self.label == other.label and self.marker() == other.marker():
             if isclose(self.position.x, other.position.x) and isclose(self.position.y, other.position.y):
                 return True
         return False
@@ -48,6 +59,15 @@ class Entity:
         Check if two entities are overlapping.
         """
         return self.box.overlap(other.box)
+
+    def update_marker(self, marker):
+        """
+        Update the marker associated with an entity.
+        """
+        try:
+            self.markers[marker] = self.markers[marker] + 1
+        except KeyError:
+            self.markers[marker] = 1
 
     def update_position(self, point, average=False):
         """
