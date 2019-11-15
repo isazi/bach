@@ -77,7 +77,7 @@ def detect_entities(arguments, entities, detections, frame_counter):
             if entity.box.overlap(new_box):
                 overlap = entity.box.overlap_area(new_box)
                 if arguments.debug:
-                    print("\t\t# Entity \"{} {}\" overlap: {}".format(entity.label, entity.marker, overlap))
+                    print("\t\t# Entity \"{} {}\" overlap: {}".format(entity.label, entity.marker(), overlap))
                 votes.append((overlap, entity, detection_id))
         detection_id = detection_id + 1
     votes.sort(key=lambda item: item[0], reverse=True)
@@ -95,10 +95,30 @@ def detect_entities(arguments, entities, detections, frame_counter):
             entity.last_seen = frame_counter
             if arguments.debug:
                 print("\t# Update entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
-                    entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
+                    entity.label, entity.marker(), entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
                     entity.bottom_right().y, entity.width, entity.height))
     for detection in assigned_detections:
         detections.remove(detection)
+
+
+def detect_aruco(arguments, aruco_markers, entities):
+    votes = list()
+    for label, point in aruco_markers.items():
+        for entity in entities:
+            if entity.position.distance(point) < arguments.marker_distance:
+                votes.append((entity.position.distance(point), label, entity))
+    votes.sort(key=lambda item: item[0])
+    assigned_labels = set()
+    assigned_entities = set()
+    for vote in votes:
+        label = vote[1]
+        entity = vote[2]
+        if (label not in assigned_labels) and (entity not in assigned_entities):
+            entity.update_marker(label)
+            assigned_labels.add(label)
+            assigned_entities.add(entity)
+            if arguments.debug:
+                print("\t# Update entity \"{} {}\": named".format(entity.label, entity.marker()))
 
 
 def video_detection(arguments, video, output_file):
@@ -115,8 +135,7 @@ def video_detection(arguments, video, output_file):
     if arguments.store_input:
         store_input = initialize_output(arguments.store_input, video.width, video.height, video.fps)
     frame_counter = 0
-    named_entities = dict()
-    unnamed_entities = list()
+    entities = list()
     while video.ready():
         try:
             frame = video.get_frame()
@@ -131,61 +150,38 @@ def video_detection(arguments, video, output_file):
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         if arguments.debug:
             print("# Darknet detections: {}".format(len(detections)))
-        # Detect named entities
-        detect_entities(arguments, named_entities.values(), detections, frame_counter)
-        # Detect unnamed entities
-        detect_entities(arguments, unnamed_entities, detections, frame_counter)
+        # Detect entities
+        detect_entities(arguments, entities, detections, frame_counter)
         # New entities
         for detection in detections:
             entity = bach.entities.Entity(label=detection[0], color=detector.colors[detection[0]],
                                           width=detection[2][2], height=detection[2][3], seen=frame_counter)
             entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
-            unnamed_entities.append(entity)
+            entities.append(entity)
             if arguments.debug:
                 print("\t# New entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
-                    entity.label, entity.marker, entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
+                    entity.label, entity.marker(), entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
                     entity.bottom_right().y, entity.width, entity.height))
         # Detect ArUco markers
         aruco_markers = detector.detect_markers(frame)
         if arguments.debug:
             print("# ArUco detections: {}".format(len(aruco_markers)))
-        for entity in unnamed_entities:
-            assigned_entity = None
-            for label, point in aruco_markers.items():
-                if entity.position.distance(point) < arguments.marker_distance:
-                    entity.marker = label
-                    named_entities[label] = entity
-                    assigned_entity = entity
-                    if arguments.debug:
-                        print("\t# Update entity \"{} {}\": named".format(entity.label, entity.marker))
-                    break
-            if assigned_entity is not None:
-                del aruco_markers[assigned_entity.marker]
-                unnamed_entities.remove(assigned_entity)
+        detect_aruco(arguments, aruco_markers, entities)
         # Add detections to frame and eliminate ghosts
-        ghosts = list()
-        for label, entity in named_entities.items():
-            bach.graphics.draw_bounding_box(frame, entity)
-            if entity.last_seen < frame_counter - arguments.ghost_threshold:
-                ghosts.append(label)
-        for ghost in ghosts:
-            if arguments.debug:
-                print("\t# Ghost \"{} {}\" deleted.".format(named_entities[ghost].label, named_entities[ghost].marker))
-            del named_entities[ghost]
-        for entity in unnamed_entities:
+        for entity in entities:
             bach.graphics.draw_bounding_box(frame, entity)
             if entity.last_seen < frame_counter - arguments.ghost_threshold:
                 if arguments.debug:
-                    print("\t# Ghost deleted.")
-                unnamed_entities.remove(entity)
+                    print("\t# Ghost \"{} {}\" deleted.".format(entity.label,
+                                                                entity.marker()))
+                entities.remove(entity)
         if arguments.debug:
-            print("# Entities: {}".format(len(named_entities)))
-            print("# Unnamed entities: {}".format(len(unnamed_entities)))
+            print("# Entities: {}".format(len(entities)))
         # Store and show output
-        for entity in named_entities.values():
+        for entity in entities:
             output_file.write("{} {} {} {} {} {}\n".format(frame_counter,
-                                                           entity.marker,
+                                                           entity.marker(),
                                                            entity.position.x,
                                                            entity.position.y,
                                                            entity.width,
