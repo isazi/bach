@@ -56,6 +56,7 @@ def __main__():
         print("Impossible to open input")
         exit(-1)
     analysis(arguments, input_file)
+    input_file.close()
     return 0
 
 
