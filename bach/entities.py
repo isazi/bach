@@ -25,7 +25,6 @@ class Entity:
         for key, value in self.markers.items():
             if value == max_marker:
                 return key
-        return None
 
     def same(self, other):
         """
