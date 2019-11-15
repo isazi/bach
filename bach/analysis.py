@@ -27,6 +27,7 @@ def analysis(arguments, input_file):
         if items[1] in entities:
             entities[items[1]].update_position(new_point)
             entities[items[1]].update_size(float(items[4]), float(items[5]))
+            entities[items[1]].last_seen = frame_counter
         else:
             entity = bach.entities.Entity(marker=int(items[1]),
                                           width=float(items[4]),
