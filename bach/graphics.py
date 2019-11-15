@@ -10,7 +10,7 @@ def draw_bounding_box(image, entity):
     cv2.rectangle(image, (int(top_left.x), int(top_left.y)), (int(bottom_right.x), int(bottom_right.y)), entity.color, 2)
     label_point = (int(top_left.x), int(top_left.y) - 10)
     cv2.putText(image,
-                "{} {}".format(entity.label, entity.marker),
+                "{} {}".format(entity.label, entity.marker()),
                 label_point,
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, entity.color, 2)
     return image
