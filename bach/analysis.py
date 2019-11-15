@@ -42,7 +42,7 @@ def analysis(arguments, input_file):
         print("# Encounters: {}".format(len(encounters)))
     for encounter in encounters:
         if arguments.debug:
-            print("\t# Encounter: (\"{} {}\", \"{} {}\"), duration: {}".format(encounter.participants[0].label,
+            print("#\tEncounter: (\"{} {}\", \"{} {}\"), duration: {}".format(encounter.participants[0].label,
                                                                                encounter.participants[0].marker,
                                                                                encounter.participants[1].label,
                                                                                encounter.participants[1].marker,
