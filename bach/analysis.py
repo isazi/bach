@@ -16,7 +16,6 @@ def command_line():
 
 
 def analysis(arguments, input_file):
-    frame_counter = 0
     entities = dict()
     encounters = list()
     for line in input_file:
