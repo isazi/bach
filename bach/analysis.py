@@ -36,21 +36,21 @@ def analysis(arguments, input_file):
             entity.position = new_point
             entity.box = bach.geometry.Rectangle(new_point, float(items[4]), float(items[5]))
             entities[items[1]] = entity
-    # Behavior detection
-    bach.behavior.encounter(frame_counter, entities.values(), encounters)
-    if arguments.debug:
-        print("# Encounters: {}".format(len(encounters)))
-    for encounter in encounters:
+        # Behavior detection
+        bach.behavior.encounter(frame_counter, entities.values(), encounters)
         if arguments.debug:
-            print("#\tEncounter: (\"{} {}\", \"{} {}\"), duration: {}".format(encounter.participants[0].label,
-                                                                              encounter.participants[0].marker(),
-                                                                              encounter.participants[1].label,
-                                                                              encounter.participants[1].marker(),
-                                                                              encounter.last - encounter.begin))
-        if encounter.last < frame_counter - arguments.ghost_threshold:
-            encounters.remove(encounter)
-    if arguments.debug:
-        print()
+            print("# Encounters: {}".format(len(encounters)))
+        for encounter in encounters:
+            if arguments.debug:
+                print("#\tEncounter: (\"{} {}\", \"{} {}\"), duration: {}".format(encounter.participants[0].label,
+                                                                                  encounter.participants[0].marker(),
+                                                                                  encounter.participants[1].label,
+                                                                                  encounter.participants[1].marker(),
+                                                                                  encounter.last - encounter.begin))
+            if encounter.last < frame_counter - arguments.ghost_threshold:
+                encounters.remove(encounter)
+        if arguments.debug:
+            print()
 
 
 def __main__():
