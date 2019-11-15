@@ -167,8 +167,7 @@ def video_detection(arguments, video, output_file):
         # Add detections to frame and eliminate ghosts
         ghosts = list()
         for label, entity in named_entities.items():
-            if label != -1:
-                bach.graphics.draw_bounding_box(frame, entity)
+            bach.graphics.draw_bounding_box(frame, entity)
             if entity.last_seen < frame_counter - arguments.ghost_threshold:
                 ghosts.append(label)
         for ghost in ghosts:
@@ -176,6 +175,7 @@ def video_detection(arguments, video, output_file):
                 print("\t# Ghost \"{} {}\" deleted.".format(named_entities[ghost].label, named_entities[ghost].marker))
             del named_entities[ghost]
         for entity in unnamed_entities:
+            bach.graphics.draw_bounding_box(frame, entity)
             if entity.last_seen < frame_counter - arguments.ghost_threshold:
                 if arguments.debug:
                     print("\t# Ghost deleted.")
@@ -183,19 +183,6 @@ def video_detection(arguments, video, output_file):
         if arguments.debug:
             print("# Entities: {}".format(len(named_entities)))
             print("# Unnamed entities: {}".format(len(unnamed_entities)))
-        # Behavior detection
-        bach.behavior.encounter(frame_counter, named_entities.values(), encounters)
-        if arguments.debug:
-            print("# Encounters: {}".format(len(encounters)))
-        for encounter in encounters:
-            if arguments.debug:
-                print("\t# Encounter: (\"{} {}\", \"{} {}\"), duration: {}".format(encounter.participants[0].label,
-                                                                                   encounter.participants[0].marker,
-                                                                                   encounter.participants[1].label,
-                                                                                   encounter.participants[1].marker,
-                                                                                   encounter.last - encounter.begin))
-            if encounter.last < frame_counter - arguments.ghost_threshold:
-                encounters.remove(encounter)
         # Store and show output
         for entity in named_entities.values():
             output_file.write("{} {} {} {} {} {}\n".format(frame_counter,
