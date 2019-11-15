@@ -25,10 +25,10 @@ def analysis(arguments, input_file):
         items = line.split(sep=" ")
         frame_counter = items[0]
         new_point = bach.geometry.Point(items[2], items[3])
-        try:
+        if items[1] in entities:
             entities[items[1]].update_position(new_point)
             entities[items[1]].update_size(items[4], items[5])
-        except KeyError:
+        else:
             entity = bach.entities.Entity(marker=items[1], width=items[4], height=items[5], seen=frame_counter)
             entity.update_position(new_point)
             entities[items[1]] = entity
