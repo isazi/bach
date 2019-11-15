@@ -66,18 +66,18 @@ def detect_entities(arguments, entities, detections, frame_counter):
         new_position = bach.geometry.Point(detection[2][0], detection[2][1])
         new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
         if arguments.debug:
-            print("\t# Detection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
-                                                                               new_box.top_left().y,
-                                                                               new_box.bottom_right().x,
-                                                                               new_box.bottom_right().y,
-                                                                               new_box.width,
-                                                                               new_box.height))
+            print("#\tDetection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
+                                                                              new_box.top_left().y,
+                                                                              new_box.bottom_right().x,
+                                                                              new_box.bottom_right().y,
+                                                                              new_box.width,
+                                                                              new_box.height))
         # Entities express interest for close detections
         for entity in entities:
             if entity.box.overlap(new_box):
                 overlap = entity.box.overlap_area(new_box)
                 if arguments.debug:
-                    print("\t\t# Entity \"{} {}\" overlap: {}".format(entity.label, entity.marker(), overlap))
+                    print("#\t\tEntity \"{} {}\" overlap: {}".format(entity.label, entity.marker(), overlap))
                 votes.append((overlap, entity, detection_id))
         detection_id = detection_id + 1
     votes.sort(key=lambda item: item[0], reverse=True)
@@ -94,7 +94,7 @@ def detect_entities(arguments, entities, detections, frame_counter):
             entity.update_size(detections[detection][2][2], detections[detection][2][3])
             entity.last_seen = frame_counter
             if arguments.debug:
-                print("\t# Update entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
+                print("#\tUpdate entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
                     entity.label, entity.marker(), entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
                     entity.bottom_right().y, entity.width, entity.height))
     for detection in assigned_detections:
@@ -118,7 +118,7 @@ def detect_aruco(arguments, aruco_markers, entities):
             assigned_labels.add(label)
             assigned_entities.add(entity)
             if arguments.debug:
-                print("\t# Update entity \"{} {}\": named".format(entity.label, entity.marker()))
+                print("#\tUpdate entity \"{} {}\": named".format(entity.label, entity.marker()))
 
 
 def video_detection(arguments, video, output_file):
@@ -160,7 +160,7 @@ def video_detection(arguments, video, output_file):
             entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
             entities.append(entity)
             if arguments.debug:
-                print("\t# New entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
+                print("#\tNew entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
                     entity.label, entity.marker(), entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
                     entity.bottom_right().y, entity.width, entity.height))
         # Detect ArUco markers
@@ -173,8 +173,8 @@ def video_detection(arguments, video, output_file):
             bach.graphics.draw_bounding_box(frame, entity)
             if entity.last_seen < frame_counter - arguments.ghost_threshold:
                 if arguments.debug:
-                    print("\t# Ghost \"{} {}\" deleted.".format(entity.label,
-                                                                entity.marker()))
+                    print("#\tGhost \"{} {}\" deleted.".format(entity.label,
+                                                               entity.marker()))
                 entities.remove(entity)
         if arguments.debug:
             print("# Entities: {}".format(len(entities)))
