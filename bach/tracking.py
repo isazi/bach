@@ -180,6 +180,8 @@ def video_detection(arguments, video, output_file):
             print("# Entities: {}".format(len(entities)))
         # Store and show output
         for entity in entities:
+            if entity.marker() == -1:
+                continue
             output_file.write("{} {} {} {} {} {}\n".format(frame_counter,
                                                            entity.marker(),
                                                            entity.position.x,
