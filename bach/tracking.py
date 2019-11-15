@@ -173,7 +173,7 @@ def video_detection(arguments, video, output_file):
             bach.graphics.draw_bounding_box(frame, entity)
             if entity.last_seen < frame_counter - arguments.ghost_threshold:
                 if arguments.debug:
-                    print("#\tGhost \"{} {}\" deleted.".format(entity.label,
+                    print("#\tGhost \"{} {}\" deleted".format(entity.label,
                                                                entity.marker()))
                 entities.remove(entity)
         if arguments.debug:
