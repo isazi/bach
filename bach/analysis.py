@@ -53,6 +53,17 @@ def analysis(arguments, input_file):
                                                                                 encounter.participants[1].label,
                                                                                 encounter.participants[1].marker()))
                 encounters.remove(encounter)
+        # Clean up
+        if arguments.debug:
+            print("# Entities: {}".format(len(entities)))
+        ghosts = list()
+        for key, entity in entities.items():
+            if entity.last_seen < frame_counter - arguments.ghost_threshold:
+                ghosts.append(key)
+        for ghost in ghosts:
+            if arguments.debug:
+                print("#\tEntity \"{} {}\" deleted".format(entities[ghost].label, entities[ghost].marker()))
+            del entities[ghost]
         if arguments.debug:
             print()
 
