@@ -8,7 +8,7 @@ def command_line():
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", help="The file containing the position of entities", type=str)
     parser.add_argument("--ghost_threshold",
-                        help="Number of frames without a new detection before the entity becomes a ghost",
+                        help="Number of frames without a something happening",
                         type=int, default=25)
     # Debug
     parser.add_argument("--debug", help="Debug mode", action="store_true")
