@@ -31,6 +31,7 @@ def analysis(arguments, input_file):
         else:
             entity = bach.entities.Entity(marker=items[1], width=items[4], height=items[5], seen=frame_counter)
             entity.position = new_point
+            entity.box = bach.geometry.Rectangle(new_point, items[4], items[5])
             entities[items[1]] = entity
     # Behavior detection
     bach.behavior.encounter(frame_counter, entities.values(), encounters)
