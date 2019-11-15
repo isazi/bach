@@ -29,7 +29,10 @@ def analysis(arguments, input_file):
             entities[items[1]].update_position(new_point)
             entities[items[1]].update_size(items[4], items[5])
         else:
-            entity = bach.entities.Entity(marker=items[1], width=items[4], height=items[5], seen=frame_counter)
+            entity = bach.entities.Entity(marker=int(items[1]),
+                                          width=float(items[4]),
+                                          height=float(items[5]),
+                                          seen=frame_counter)
             entity.position = new_point
             entity.box = bach.geometry.Rectangle(new_point, float(items[4]), float(items[5]))
             entities[items[1]] = entity
