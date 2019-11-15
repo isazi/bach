@@ -23,15 +23,15 @@ def analysis(arguments, input_file):
         if line[0] == "#":
             continue
         items = line.split(sep=" ")
-        frame_counter = items[0]
-        new_point = bach.geometry.Point(items[2], items[3])
+        frame_counter = int(items[0])
+        new_point = bach.geometry.Point(float(items[2]), float(items[3]))
         if items[1] in entities:
             entities[items[1]].update_position(new_point)
             entities[items[1]].update_size(items[4], items[5])
         else:
             entity = bach.entities.Entity(marker=items[1], width=items[4], height=items[5], seen=frame_counter)
             entity.position = new_point
-            entity.box = bach.geometry.Rectangle(new_point, items[4], items[5])
+            entity.box = bach.geometry.Rectangle(new_point, float(items[4]), float(items[5]))
             entities[items[1]] = entity
     # Behavior detection
     bach.behavior.encounter(frame_counter, entities.values(), encounters)
