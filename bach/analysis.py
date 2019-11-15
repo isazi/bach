@@ -45,7 +45,7 @@ def analysis(arguments, input_file):
                                                                                   encounter.participants[0].marker(),
                                                                                   encounter.participants[1].label,
                                                                                   encounter.participants[1].marker(),
-                                                                                  encounter.last - encounter.begin))
+                                                                                  encounter.duration()))
             if encounter.last < frame_counter - arguments.ghost_threshold:
                 if arguments.debug:
                     print("#\tEncounter deleted: (\"{} {}\", \"{} {}\")".format(encounter.participants[0].label,
