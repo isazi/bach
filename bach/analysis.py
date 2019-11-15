@@ -43,10 +43,10 @@ def analysis(arguments, input_file):
     for encounter in encounters:
         if arguments.debug:
             print("#\tEncounter: (\"{} {}\", \"{} {}\"), duration: {}".format(encounter.participants[0].label,
-                                                                               encounter.participants[0].marker,
-                                                                               encounter.participants[1].label,
-                                                                               encounter.participants[1].marker,
-                                                                               encounter.last - encounter.begin))
+                                                                              encounter.participants[0].marker(),
+                                                                              encounter.participants[1].label,
+                                                                              encounter.participants[1].marker(),
+                                                                              encounter.last - encounter.begin))
         if encounter.last < frame_counter - arguments.ghost_threshold:
             encounters.remove(encounter)
     if arguments.debug:
