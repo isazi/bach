@@ -117,7 +117,6 @@ def video_detection(arguments, video, output_file):
     frame_counter = 0
     named_entities = dict()
     unnamed_entities = list()
-    encounters = list()
     while video.ready():
         try:
             frame = video.get_frame()
