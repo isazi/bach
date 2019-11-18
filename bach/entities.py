@@ -93,3 +93,9 @@ class Entity:
             self.width = width
             self.height = height
         self.box.update(self.position, self.width, self.height)
+
+    def average_speed(self):
+        """
+        Return the average speed of the entity, in pixels per frame.
+        """
+        return self.distance / self.last_seen
