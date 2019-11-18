@@ -104,8 +104,12 @@ def detect_entities(arguments, entities, detections, frame_counter):
 def detect_aruco(arguments, aruco_markers, entities):
     votes = list()
     for label, point in aruco_markers.items():
+        if arguments.debug:
+            print("#\tArUco detection: {}".format(label))
         for entity in entities:
             if entity.position.distance(point) < arguments.marker_distance:
+                if arguments.debug:
+                    print("#\t\tArUco overlap \"{} {}\": {}".format(entity.label, entity.marker(), label))
                 votes.append((entity.position.distance(point), label, entity))
     votes.sort(key=lambda item: item[0])
     assigned_labels = set()
@@ -118,7 +122,7 @@ def detect_aruco(arguments, aruco_markers, entities):
             assigned_labels.add(label)
             assigned_entities.add(entity)
             if arguments.debug:
-                print("#\tUpdate entity \"{} {}\": named".format(entity.label, entity.marker()))
+                print("#\tUpdate entity \"{} {}\": new label {}".format(entity.label, entity.marker(), label))
 
 
 def video_detection(arguments, video, output_file):
