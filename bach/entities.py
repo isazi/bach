@@ -1,4 +1,5 @@
 from math import isclose
+import bach.geometry
 
 
 class Entity:
@@ -16,6 +17,7 @@ class Entity:
         self.markers[marker] = 1
         self.position = None
         self.box = None
+        self.distance = 0
 
     def marker(self):
         """
@@ -73,12 +75,12 @@ class Entity:
         Update the position of the entity.
         """
         if average:
-            self.position.x = self.position.x + ((point.x - self.position.x) / self.detections)
-            self.position.y = self.position.y + ((point.y - self.position.y) / self.detections)
+            new_position = bach.geometry.Point(self.position.x + ((point.x - self.position.x) / self.detections),
+                                               self.position.y + ((point.y - self.position.y) / self.detections))
         else:
-            self.position.x = point.x
-            self.position.y = point.y
-        self.box.update(self.position, self.width, self.height)
+            new_position = point
+        self.distance = self.distance + bach.geometry.distance(self.position, new_position)
+        self.box.update(new_position, self.width, self.height)
 
     def update_size(self, width, height, average=False):
         """
