@@ -44,6 +44,7 @@ class Detector:
         self.aruco_parameters.adaptiveThreshWinSizeStep = 3
         self.aruco_parameters.minMarkerPerimeterRate = 0.004
         self.aruco_parameters.maxMarkerPerimeterRate = 0.032
+        self.aruco_parameters.polygonalApproxAccuracyRate = 0.025
         self.aruco_parameters.markerBorderBits = 1
         self.aruco_parameters.maxErroneousBitsInBorderRate = 0.40
         self.aruco_parameters.errorCorrectionRate = 0.9
