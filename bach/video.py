@@ -51,6 +51,7 @@ class Webcam(Video):
         Initialize capture device.
         """
         self.video = cv2.VideoCapture(self.webcam_id)
+        self.video.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc("M", "J", "P", "G"))
         self.video.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
         self.video.set(cv2.CAP_PROP_FPS, self.fps)
