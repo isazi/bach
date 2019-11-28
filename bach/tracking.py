@@ -26,6 +26,8 @@ def command_line():
     parser.add_argument("-w", "--weights_path", help="File containing darknet weights", type=str)
     # Detection
     parser.add_argument("--show_video", help="Show video during detection", action="store_true")
+    parser.add_argument("--video_width", help="Width of the shown video", type=int, default=0)
+    parser.add_argument("--video_height", help="Height of the shown video", type=int, default=0)
     parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
     parser.add_argument("--ghost_threshold",
                         help="Number of frames without a new detection before the entity becomes a ghost",
@@ -195,7 +197,10 @@ def video_detection(arguments, video, output_file):
         if arguments.video_output:
             video_output.write(frame)
         if arguments.show_video:
-            cv2.imshow("BACH", frame)
+            if (arguments.video_width > 0) and (arguments.video_height > 0):
+                cv2.imshow("BACH", bach.graphics.resize(frame, arguments.video_width, arguments.video_height))
+            else:
+                cv2.imshow("BACH", frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         if arguments.debug:
