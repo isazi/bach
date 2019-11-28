@@ -1,3 +1,6 @@
+from math import isclose
+import bach.geometry
+
 
 class Entity:
     def __init__(self, label="", marker=-1, color=(0, 0, 0), width=1, height=1, seen=None):
@@ -5,13 +8,34 @@ class Entity:
         Default constructor.
         """
         self.label = label
-        self.marker = marker
         self.color = color
         self.width = width
         self.height = height
-        self.frame_seen = seen
+        self.last_seen = seen
+        self.detections = 1
+        self.markers = dict()
+        self.markers[marker] = 1
         self.position = None
         self.box = None
+        self.distance = 0
+
+    def marker(self):
+        """
+        Return the current best marker.
+        """
+        max_marker = max(self.markers.values())
+        for key, value in self.markers.items():
+            if value == max_marker:
+                return key
+
+    def same(self, other):
+        """
+        Check if two entities are the same.
+        """
+        if self.label == other.label and self.marker() == other.marker():
+            if isclose(self.position.x, other.position.x) and isclose(self.position.y, other.position.y):
+                return True
+        return False
 
     def top_left(self):
         """
@@ -37,18 +61,41 @@ class Entity:
         """
         return self.box.overlap(other.box)
 
-    def update_position(self, point):
+    def update_marker(self, marker):
+        """
+        Update the marker associated with an entity.
+        """
+        try:
+            self.markers[marker] = self.markers[marker] + 1
+        except KeyError:
+            self.markers[marker] = 1
+
+    def update_position(self, point, average=False):
         """
         Update the position of the entity.
         """
-        self.position.x = (self.position.x + point.x) / 2
-        self.position.y = (self.position.y + point.y) / 2
-        self.box.update(self.position, self.width, self.height)
+        if average:
+            new_position = bach.geometry.Point(self.position.x + ((point.x - self.position.x) / self.detections),
+                                               self.position.y + ((point.y - self.position.y) / self.detections))
+        else:
+            new_position = point
+        self.distance = self.distance + bach.geometry.distance(self.position, new_position)
+        self.box.update(new_position, self.width, self.height)
 
-    def update_size(self, width, height):
+    def update_size(self, width, height, average=False):
         """
         Update the size of the entity.
         """
-        self.width = (self.width + width) / 2
-        self.height = (self.height + height) / 2
+        if average:
+            self.width = self.width + ((width - self.width) / self.detections)
+            self.height = self.height + ((height - self.height) / self.detections)
+        else:
+            self.width = width
+            self.height = height
         self.box.update(self.position, self.width, self.height)
+
+    def average_speed(self):
+        """
+        Return the average speed of the entity, in pixels per frame.
+        """
+        return self.distance / self.last_seen

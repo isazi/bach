@@ -51,6 +51,7 @@ class Webcam(Video):
         Initialize capture device.
         """
         self.video = cv2.VideoCapture(self.webcam_id)
+        self.video.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc("M", "J", "P", "G"))
         self.video.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
         self.video.set(cv2.CAP_PROP_FPS, self.fps)
@@ -110,3 +111,22 @@ class VideoWriter:
         Save a frame in the file.
         """
         self.out.write(frame)
+
+
+def frame_extraction(video, output_file, reduction=5):
+    """
+    Extract frames from a video and store them as images.
+    """
+    if not video.ready():
+        print("Impossible to open video source.")
+        exit(-1)
+    frame_counter = 0
+    while video.ready():
+        try:
+            frame = video.get_frame()
+        except ValueError as err:
+            print("Error: ".format(str(err)))
+            break
+        if frame_counter % reduction == 0:
+            cv2.imwrite("{}_{}.png".format(output_file, frame_counter), frame)
+        frame_counter = frame_counter + 1

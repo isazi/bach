@@ -23,10 +23,15 @@ class Detector:
         """
         # Initialize Darknet
         if self.configuration_file and self.weights_file:
-            darknet.initialize(self.configuration_file, self.weights_file, self.meta_file)
+            darknet.performDetect(imagePath="",
+                                  configPath=self.configuration_file,
+                                  weightPath=self.weights_file,
+                                  metaPath=self.meta_file,
+                                  showImage=False,
+                                  initOnly=True)
         else:
             return False
-        for name in darknet.alt_names:
+        for name in darknet.altNames:
             # The color is in BGR format
             self.colors[name] = (numpy.random.randint(0, 255),
                                  numpy.random.randint(0, 255),
@@ -39,6 +44,7 @@ class Detector:
         self.aruco_parameters.adaptiveThreshWinSizeStep = 3
         self.aruco_parameters.minMarkerPerimeterRate = 0.004
         self.aruco_parameters.maxMarkerPerimeterRate = 0.032
+        self.aruco_parameters.polygonalApproxAccuracyRate = 0.025
         self.aruco_parameters.markerBorderBits = 1
         self.aruco_parameters.maxErroneousBitsInBorderRate = 0.40
         self.aruco_parameters.errorCorrectionRate = 0.9
@@ -52,8 +58,8 @@ class Detector:
         """
         processed_frame = frame.copy()
         processed_frame = cv2.resize(processed_frame,
-                                     (darknet.lib.network_width(darknet.net_main),
-                                      darknet.lib.network_height(darknet.net_main)),
+                                     (darknet.lib.network_width(darknet.netMain),
+                                      darknet.lib.network_height(darknet.netMain)),
                                      interpolation=cv2.INTER_NEAREST)
         return processed_frame
 
@@ -62,8 +68,8 @@ class Detector:
         """
         Process a frame through the neural network and return detected objects.
         """
-        detections = darknet.detect(darknet.net_main,
-                                    darknet.meta_main,
+        detections = darknet.detect(darknet.netMain,
+                                    darknet.metaMain,
                                     frame,
                                     threshold,
                                     threshold)
