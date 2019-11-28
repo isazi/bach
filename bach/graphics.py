@@ -23,3 +23,11 @@ def sharpen_image(image):
     blur = cv2.GaussianBlur(image, (0, 0), 3)
     sharp = cv2.addWeighted(image, 1.5, blur, -0.5, 0)
     return sharp
+
+
+def resize(image, width, height):
+    """
+    Resize the image using user provided width and height.
+    """
+    resized_image = cv2.resize(image.copy(), (width, height), interpolation=cv2.INTER_NEAREST)
+    return resized_image
