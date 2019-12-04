@@ -1,5 +1,4 @@
 import argparse
-import cv2
 import bach.video
 
 
