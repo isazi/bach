@@ -19,7 +19,6 @@ def command_line():
     parser.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
     parser.add_argument("--fps", help="Set the frames per second", type=int, default=25)
     parser.add_argument("--video_output", help="File where to store the output video", type=str)
-    parser.add_argument("--store_input", help="File where to save the unmodified input", type=str)
     # Darknet
     parser.add_argument("-c", "--config_path", help="File containing darknet configuration", type=str)
     parser.add_argument("-m", "--meta_path", help="File containing darknet metadata", type=str)
@@ -136,9 +135,6 @@ def video_detection(arguments, video, output_file):
     video_output = None
     if arguments.video_output:
         video_output = initialize_output(arguments.video_output, video.width, video.height, video.fps)
-    store_input = None
-    if arguments.store_input:
-        store_input = initialize_output(arguments.store_input, video.width, video.height, video.fps)
     frame_counter = 0
     entities = list()
     while video.ready():
@@ -147,8 +143,6 @@ def video_detection(arguments, video, output_file):
         except ValueError as err:
             print("Error: ".format(str(err)))
             break
-        if arguments.store_input:
-            store_input.write(frame)
         frame_counter = frame_counter + 1
         if arguments.debug:
             print("# Frame: {}".format(frame_counter))
