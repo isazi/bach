@@ -32,8 +32,6 @@ def command_line():
     parser.add_argument("--ghost_threshold",
                         help="Number of frames without a new detection before the entity becomes a ghost",
                         type=int, default=25)
-    parser.add_argument("--marker_distance", help="Maximum distance of a marker from an entity",
-                        type=int, default=25)
     parser.add_argument("--output_file", help="File where BACH output is stored", type=str)
     # Debug
     parser.add_argument("--debug", help="Debug mode", action="store_true")
@@ -110,7 +108,7 @@ def detect_aruco(arguments, aruco_markers, entities):
         if arguments.debug:
             print("#\tArUco detection: {}".format(label))
         for entity in entities:
-            if entity.position.distance(point) < arguments.marker_distance:
+            if entity.contains(point):
                 if arguments.debug:
                     print("#\t\tArUco overlap \"{} {}\": {}".format(entity.label, entity.marker(), label))
                 votes.append((entity.position.distance(point), label, entity))
