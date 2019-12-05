@@ -119,6 +119,7 @@ class VideoReader(threading.Thread):
         threading.Thread.__init__(self)
         self.video = video
         self.queue = buffer
+        self.terminate = False
 
     def run(self):
         while self.video.ready():
@@ -127,6 +128,8 @@ class VideoReader(threading.Thread):
                 self.queue.put(frame)
             except ValueError as err:
                 print("Error: ".format(str(err)))
+                break
+            if self.terminate:
                 break
 
 

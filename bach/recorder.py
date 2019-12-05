@@ -39,7 +39,7 @@ def __main__():
             break
         output.write(frame)
     if video.ready():
-        del video
+        video_reader.terminate = True
     video_reader.join()
 
 

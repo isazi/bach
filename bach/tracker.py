@@ -219,7 +219,7 @@ def __main__():
     video_reader.start()
     video_detection(arguments, frame_queue, output_file)
     if video.ready():
-        del video
+        video_reader.terminate = True
     video_reader.join()
     output_file.close()
     return 0
