@@ -1,4 +1,5 @@
 import cv2
+import threading
 
 
 class Video:
@@ -111,6 +112,22 @@ class VideoWriter:
         Save a frame in the file.
         """
         self.out.write(frame)
+
+
+class VideoReader(threading.Thread):
+    def __init__(self, video, buffer):
+        threading.Thread.__init__(self)
+        self.video = video
+        self.queue = buffer
+
+    def run(self):
+        while self.video.ready():
+            try:
+                frame = self.video.get_frame()
+                self.queue.put(frame)
+            except ValueError as err:
+                print("Error: ".format(str(err)))
+                break
 
 
 def frame_extraction(video, output_file, reduction=5):

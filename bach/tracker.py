@@ -1,6 +1,5 @@
 import argparse
 import cv2
-import threading
 import queue
 from bach.darknet import set_gpu
 import bach.detector
@@ -9,22 +8,6 @@ import bach.graphics
 import bach.geometry
 import bach.entities
 import bach.behavior
-
-
-class VideoReader(threading.Thread):
-    def __init__(self, video, buffer):
-        threading.Thread.__init__(self)
-        self.video = video
-        self.queue = buffer
-
-    def run(self):
-        while self.video.ready():
-            try:
-                frame = self.video.get_frame()
-                self.queue.put(frame)
-            except ValueError as err:
-                print("Error: ".format(str(err)))
-                break
 
 
 def command_line():
@@ -232,7 +215,7 @@ def __main__():
     output_file = open(arguments.output_file, "w")
     output_file.write("# time id x y width height\n")
     frame_queue = queue.Queue()
-    video_reader = VideoReader(video, frame_queue)
+    video_reader = bach.video.VideoReader(video, frame_queue)
     video_reader.start()
     video_detection(arguments, frame_queue, output_file)
     if video.ready():
