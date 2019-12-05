@@ -12,10 +12,10 @@ import bach.behavior
 
 
 class VideoReader(threading.Thread):
-    def __init__(self, video, queue):
+    def __init__(self, video, buffer):
         threading.Thread.__init__(self)
         self.video = video
-        self.queue = queue
+        self.queue = buffer
 
     def run(self):
         while self.video.ready():
