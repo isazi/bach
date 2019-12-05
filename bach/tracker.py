@@ -1,5 +1,7 @@
 import argparse
 import cv2
+import threading
+import queue
 from bach.darknet import set_gpu
 import bach.detector
 import bach.video
@@ -7,6 +9,22 @@ import bach.graphics
 import bach.geometry
 import bach.entities
 import bach.behavior
+
+
+class VideoReader(threading.Thread):
+    def __init__(self, video, queue):
+        threading.Thread.__init__(self)
+        self.video = video
+        self.queue = queue
+
+    def run(self):
+        while self.video.ready():
+            try:
+                frame = self.video.get_frame()
+                self.queue.put(frame)
+            except ValueError as err:
+                print("Error: ".format(str(err)))
+                break
 
 
 def command_line():
@@ -125,7 +143,7 @@ def detect_aruco(arguments, aruco_markers, entities):
                 print("#\tUpdate entity \"{} {}\": new label {}".format(entity.label, entity.marker(), label))
 
 
-def video_detection(arguments, video, output_file):
+def video_detection(arguments, video_queue, output_file):
     set_gpu(arguments.gpu)
     detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
     return_code = detector.initialize()
@@ -134,15 +152,11 @@ def video_detection(arguments, video, output_file):
         exit(-1)
     video_output = None
     if arguments.video_output:
-        video_output = initialize_output(arguments.video_output, video.width, video.height, video.fps)
+        video_output = initialize_output(arguments.video_output, arguments.width, arguments.height, arguments.fps)
     frame_counter = 0
     entities = list()
-    while video.ready():
-        try:
-            frame = video.get_frame()
-        except ValueError as err:
-            print("Error: ".format(str(err)))
-            break
+    while True:
+        frame = video_queue.get()
         frame_counter = frame_counter + 1
         if arguments.debug:
             print("# Frame: {}".format(frame_counter))
@@ -212,7 +226,11 @@ def __main__():
         exit(-1)
     output_file = open(arguments.output_file, "w")
     output_file.write("# time id x y width height\n")
-    video_detection(arguments, video, output_file)
+    frame_queue = queue.Queue()
+    video_reader = VideoReader(video, frame_queue)
+    video_reader.run()
+    video_detection(arguments, frame_queue, output_file)
+    video_reader.join()
     output_file.close()
     return 0
 
