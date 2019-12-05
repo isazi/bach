@@ -231,7 +231,7 @@ def __main__():
     output_file.write("# time id x y width height\n")
     frame_queue = queue.Queue()
     video_reader = VideoReader(video, frame_queue)
-    video_reader.run()
+    video_reader.start()
     video_detection(arguments, frame_queue, output_file)
     video_reader.join()
     output_file.close()
