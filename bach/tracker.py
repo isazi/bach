@@ -218,7 +218,7 @@ def __main__():
     output_file = open(arguments.output_file, "w")
     output_file.write("# time id x y width height\n")
     frame_queue = queue.Queue(maxsize=arguments.buffer)
-    video_reader = bach.video.VideoReader(video, frame_queue)
+    video_reader = bach.video.VideoReader(video, frame_queue, arguments.timeout)
     video_reader.start()
     video_detection(arguments, frame_queue, output_file)
     if video.ready():

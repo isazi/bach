@@ -30,7 +30,7 @@ def __main__():
     output = bach.video.VideoWriter("{}.mp4".format(arguments.output), arguments.width, arguments.height, arguments.fps)
     output.initialize()
     frame_queue = queue.Queue(maxsize=arguments.buffer)
-    video_reader = bach.video.VideoReader(video, frame_queue)
+    video_reader = bach.video.VideoReader(video, frame_queue, arguments.timeout)
     video_reader.start()
     frame_counter = 0
     while frame_counter < arguments.frames:
