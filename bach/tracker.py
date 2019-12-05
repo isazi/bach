@@ -156,7 +156,10 @@ def video_detection(arguments, video_queue, output_file):
     frame_counter = 0
     entities = list()
     while True:
-        frame = video_queue.get()
+        try:
+            frame = video_queue.get(timeout=5)
+        except queue.Empty:
+            break
         frame_counter = frame_counter + 1
         if arguments.debug:
             print("# Frame: {}".format(frame_counter))
