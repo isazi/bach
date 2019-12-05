@@ -34,6 +34,7 @@ def __main__():
     while frame_counter < arguments.frames:
         try:
             frame = frame_queue.get(timeout=5)
+            frame_queue.task_done()
             frame_counter = frame_counter + 1
         except queue.Empty:
             break

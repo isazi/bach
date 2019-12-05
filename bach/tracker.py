@@ -141,6 +141,7 @@ def video_detection(arguments, video_queue, output_file):
     while True:
         try:
             frame = video_queue.get(timeout=5)
+            video_queue.task_done()
             if arguments.debug:
                 print("# Queue size: {}".format(video_queue.qsize()))
         except queue.Empty:
