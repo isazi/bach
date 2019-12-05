@@ -1,5 +1,6 @@
 import cv2
 import threading
+import queue
 
 
 class Video:
@@ -115,20 +116,23 @@ class VideoWriter:
 
 
 class VideoReader(threading.Thread):
-    def __init__(self, video, buffer):
+    def __init__(self, video, buffer, timeout):
         threading.Thread.__init__(self)
         self.video = video
         self.queue = buffer
+        self.timeout = timeout
         self.terminate = False
 
     def run(self):
         while self.video.ready():
             try:
                 frame = self.video.get_frame()
-                self.queue.put(frame)
+                self.queue.put(frame, timeout=self.timeout)
             except ValueError as err:
                 print("Error: ".format(str(err)))
                 break
+            except queue.Full:
+                print("Error: queue full")
             if self.terminate:
                 break
 

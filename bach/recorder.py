@@ -12,6 +12,8 @@ def command_line():
     parser.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
     parser.add_argument("--fps", help="Set the frames per second", type=int, default=25)
     parser.add_argument("--frames", help="The number of frames to record", type=int)
+    parser.add_argument("--timeout", help="Timeout for the buffer", type=int, default=5)
+    parser.add_argument("--buffer", help="The buffer size", type=int, default=25)
     return parser.parse_args()
 
 
@@ -27,13 +29,13 @@ def __main__():
         exit(-1)
     output = bach.video.VideoWriter("{}.mp4".format(arguments.output), arguments.width, arguments.height, arguments.fps)
     output.initialize()
-    frame_queue = queue.Queue()
+    frame_queue = queue.Queue(maxsize=arguments.buffer)
     video_reader = bach.video.VideoReader(video, frame_queue)
     video_reader.start()
     frame_counter = 0
     while frame_counter < arguments.frames:
         try:
-            frame = frame_queue.get(timeout=5)
+            frame = frame_queue.get(timeout=arguments.timeout)
             frame_queue.task_done()
             frame_counter = frame_counter + 1
         except queue.Empty:

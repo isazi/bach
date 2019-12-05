@@ -20,6 +20,8 @@ def command_line():
     parser.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
     parser.add_argument("--fps", help="Set the frames per second", type=int, default=25)
     parser.add_argument("--video_output", help="File where to store the output video", type=str)
+    parser.add_argument("--timeout", help="Timeout for the buffer", type=int, default=5)
+    parser.add_argument("--buffer", help="The buffer size", type=int, default=25)
     # Darknet
     parser.add_argument("-c", "--config_path", help="File containing darknet configuration", type=str)
     parser.add_argument("-m", "--meta_path", help="File containing darknet metadata", type=str)
@@ -140,7 +142,7 @@ def video_detection(arguments, video_queue, output_file):
     entities = list()
     while True:
         try:
-            frame = video_queue.get(timeout=5)
+            frame = video_queue.get(timeout=arguments.timeout)
             video_queue.task_done()
             if arguments.debug:
                 print("# Queue size: {}".format(video_queue.qsize()))
@@ -215,7 +217,7 @@ def __main__():
         exit(-1)
     output_file = open(arguments.output_file, "w")
     output_file.write("# time id x y width height\n")
-    frame_queue = queue.Queue()
+    frame_queue = queue.Queue(maxsize=arguments.buffer)
     video_reader = bach.video.VideoReader(video, frame_queue)
     video_reader.start()
     video_detection(arguments, frame_queue, output_file)
