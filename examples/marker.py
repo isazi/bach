@@ -1,9 +1,29 @@
 import cv2
 from cv2 import aruco
+import argparse
 import bach.video
 
 
-WEBCAM_ID = 0
+def initialize_input(arguments):
+    if arguments.file:
+        video = bach.video.VideoFile(arguments.file)
+    else:
+        video = bach.video.Webcam(webcam_id=arguments.webcam,
+                                  width=arguments.width,
+                                  height=arguments.height,
+                                  fps=arguments.fps)
+    video.initialize()
+    return video
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--webcam", help="The ID of the webcam", type=int)
+parser.add_argument("--file", help="The file containing the video", type=str)
+parser.add_argument("--width", help="Webcam's resolution width", type=int, default=640)
+parser.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
+parser.add_argument("--fps", help="Set the frames per second", type=int, default=25)
+arguments = parser.parse_args()
+
 aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_50)
 parameters = aruco.DetectorParameters_create()
 parameters.adaptiveThreshWinSizeMin = 3
@@ -11,19 +31,17 @@ parameters.adaptiveThreshWinSizeMax = 60
 parameters.adaptiveThreshWinSizeStep = 3
 parameters.minMarkerPerimeterRate = 0.004
 parameters.maxMarkerPerimeterRate = 0.032
+parameters.polygonalApproxAccuracyRate = 0.025
 parameters.markerBorderBits = 1
 parameters.maxErroneousBitsInBorderRate = 0.40
 parameters.errorCorrectionRate = 0.9
 parameters.detectInvertedMarker = False
-webcam = bach.video.Webcam(webcam_id=WEBCAM_ID, width=1920, height=1088)
-webcam.initialize()
 
-if not webcam.ready():
-    exit(-1)
+video = initialize_input(arguments)
 
-while webcam.ready():
+while video.ready():
     try:
-        frame = webcam.get_frame()
+        frame = video.get_frame()
     except ValueError as err:
         print("Error: ".format(str(err)))
         break

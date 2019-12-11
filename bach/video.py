@@ -1,4 +1,6 @@
 import cv2
+import threading
+import queue
 
 
 class Video:
@@ -55,6 +57,9 @@ class Webcam(Video):
         self.video.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
         self.video.set(cv2.CAP_PROP_FPS, self.fps)
+        self.video.set(cv2.CAP_PROP_AUTOFOCUS, True)
+        self.video.set(cv2.CAP_PROP_AUTO_WB, True)
+        self.video.set(cv2.CAP_PROP_BRIGHTNESS, 130)
 
 
 class VideoFile(Video):
@@ -111,6 +116,28 @@ class VideoWriter:
         Save a frame in the file.
         """
         self.out.write(frame)
+
+
+class VideoReader(threading.Thread):
+    def __init__(self, video, buffer, timeout):
+        threading.Thread.__init__(self)
+        self.video = video
+        self.queue = buffer
+        self.timeout = timeout
+        self.terminate = False
+
+    def run(self):
+        while self.video.ready():
+            try:
+                frame = self.video.get_frame()
+                self.queue.put(frame, timeout=self.timeout)
+            except ValueError as err:
+                print("Error: ".format(str(err)))
+                break
+            except queue.Full:
+                print("Error: queue full")
+            if self.terminate:
+                break
 
 
 def frame_extraction(video, output_file, reduction=5):

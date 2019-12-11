@@ -70,29 +70,21 @@ class Entity:
         except KeyError:
             self.markers[marker] = 1
 
-    def update_position(self, point, average=False):
+    def update_position(self, point, width, height, average=False):
         """
         Update the position of the entity.
         """
         if average:
             new_position = bach.geometry.Point(self.position.x + ((point.x - self.position.x) / self.detections),
                                                self.position.y + ((point.y - self.position.y) / self.detections))
-        else:
-            new_position = point
-        self.distance = self.distance + bach.geometry.distance(self.position, new_position)
-        self.box.update(new_position, self.width, self.height)
-
-    def update_size(self, width, height, average=False):
-        """
-        Update the size of the entity.
-        """
-        if average:
             self.width = self.width + ((width - self.width) / self.detections)
             self.height = self.height + ((height - self.height) / self.detections)
         else:
+            new_position = point
             self.width = width
             self.height = height
-        self.box.update(self.position, self.width, self.height)
+        self.distance = self.distance + bach.geometry.distance(self.position, new_position)
+        self.box.update(new_position, self.width, self.height)
 
     def average_speed(self):
         """

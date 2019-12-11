@@ -1,5 +1,6 @@
 import argparse
 import cv2
+import queue
 from bach.darknet import set_gpu
 import bach.detector
 import bach.video
@@ -19,7 +20,8 @@ def command_line():
     parser.add_argument("--height", help="Webcam's resolution height", type=int, default=480)
     parser.add_argument("--fps", help="Set the frames per second", type=int, default=25)
     parser.add_argument("--video_output", help="File where to store the output video", type=str)
-    parser.add_argument("--store_input", help="File where to save the unmodified input", type=str)
+    parser.add_argument("--timeout", help="Timeout for the buffer", type=int, default=5)
+    parser.add_argument("--buffer", help="The buffer size", type=int, default=25)
     # Darknet
     parser.add_argument("-c", "--config_path", help="File containing darknet configuration", type=str)
     parser.add_argument("-m", "--meta_path", help="File containing darknet metadata", type=str)
@@ -31,8 +33,6 @@ def command_line():
     parser.add_argument("--threshold", help="Detection threshold", type=float, default=0.5)
     parser.add_argument("--ghost_threshold",
                         help="Number of frames without a new detection before the entity becomes a ghost",
-                        type=int, default=25)
-    parser.add_argument("--marker_distance", help="Maximum distance of a marker from an entity",
                         type=int, default=25)
     parser.add_argument("--output_file", help="File where BACH output is stored", type=str)
     # Debug
@@ -92,8 +92,9 @@ def detect_entities(arguments, entities, detections, frame_counter):
             assigned_detections.add(detections[detection])
             assigned_entities.add(entity)
             entity.detections = entity.detections + 1
-            entity.update_position(bach.geometry.Point(detections[detection][2][0], detections[detection][2][1]))
-            entity.update_size(detections[detection][2][2], detections[detection][2][3])
+            entity.update_position(bach.geometry.Point(detections[detection][2][0], detections[detection][2][1]),
+                                   detections[detection][2][2],
+                                   detections[detection][2][3])
             entity.last_seen = frame_counter
             if arguments.debug:
                 print("#\tUpdate entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
@@ -109,7 +110,7 @@ def detect_aruco(arguments, aruco_markers, entities):
         if arguments.debug:
             print("#\tArUco detection: {}".format(label))
         for entity in entities:
-            if entity.position.distance(point) < arguments.marker_distance:
+            if entity.contains(point):
                 if arguments.debug:
                     print("#\t\tArUco overlap \"{} {}\": {}".format(entity.label, entity.marker(), label))
                 votes.append((entity.position.distance(point), label, entity))
@@ -127,7 +128,7 @@ def detect_aruco(arguments, aruco_markers, entities):
                 print("#\tUpdate entity \"{} {}\": new label {}".format(entity.label, entity.marker(), label))
 
 
-def video_detection(arguments, video, output_file):
+def video_detection(arguments, video_queue, output_file):
     set_gpu(arguments.gpu)
     detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
     return_code = detector.initialize()
@@ -136,20 +137,17 @@ def video_detection(arguments, video, output_file):
         exit(-1)
     video_output = None
     if arguments.video_output:
-        video_output = initialize_output(arguments.video_output, video.width, video.height, video.fps)
-    store_input = None
-    if arguments.store_input:
-        store_input = initialize_output(arguments.store_input, video.width, video.height, video.fps)
+        video_output = initialize_output(arguments.video_output, arguments.width, arguments.height, arguments.fps)
     frame_counter = 0
     entities = list()
-    while video.ready():
+    while True:
         try:
-            frame = video.get_frame()
-        except ValueError as err:
-            print("Error: ".format(str(err)))
+            frame = video_queue.get(timeout=arguments.timeout)
+            video_queue.task_done()
+            if arguments.debug:
+                print("# Queue size: {}".format(video_queue.qsize()))
+        except queue.Empty:
             break
-        if arguments.store_input:
-            store_input.write(frame)
         frame_counter = frame_counter + 1
         if arguments.debug:
             print("# Frame: {}".format(frame_counter))
@@ -180,7 +178,7 @@ def video_detection(arguments, video, output_file):
             if entity.last_seen < frame_counter - arguments.ghost_threshold:
                 if arguments.debug:
                     print("#\tGhost \"{} {}\" deleted".format(entity.label,
-                                                               entity.marker()))
+                                                              entity.marker()))
                 entities.remove(entity)
         if arguments.debug:
             print("# Entities: {}".format(len(entities)))
@@ -219,7 +217,13 @@ def __main__():
         exit(-1)
     output_file = open(arguments.output_file, "w")
     output_file.write("# time id x y width height\n")
-    video_detection(arguments, video, output_file)
+    frame_queue = queue.Queue(maxsize=arguments.buffer)
+    video_reader = bach.video.VideoReader(video, frame_queue, arguments.timeout)
+    video_reader.start()
+    video_detection(arguments, frame_queue, output_file)
+    if video.ready():
+        video_reader.terminate = True
+    video_reader.join()
     output_file.close()
     return 0
 
