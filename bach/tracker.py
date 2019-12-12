@@ -1,6 +1,7 @@
 import argparse
 import cv2
 import queue
+import time
 from bach.darknet import set_gpu
 import bach.detector
 import bach.video
@@ -216,6 +217,7 @@ def __main__():
         print("Impossible to save output.")
         exit(-1)
     output_file = open(arguments.output_file, "w")
+    output_file.write("# {}\n".format(time.strftime("%d/%m/%Y %H:%M:%S")))
     output_file.write("# time id x y width height\n")
     frame_queue = queue.Queue(maxsize=arguments.buffer)
     video_reader = bach.video.VideoReader(video, frame_queue, arguments.timeout)
