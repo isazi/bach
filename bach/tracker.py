@@ -1,6 +1,7 @@
 import argparse
 import cv2
 import queue
+import time
 from bach.darknet import set_gpu
 import bach.detector
 import bach.video
@@ -184,7 +185,7 @@ def video_detection(arguments, video_queue, output_file):
             print("# Entities: {}".format(len(entities)))
         # Store and show output
         for entity in entities:
-            if entity.marker() == -1:
+            if not arguments.debug and entity.marker() == -1:
                 continue
             output_file.write("{} {} {} {} {} {}\n".format(frame_counter,
                                                            entity.marker(),
@@ -216,6 +217,7 @@ def __main__():
         print("Impossible to save output.")
         exit(-1)
     output_file = open(arguments.output_file, "w")
+    output_file.write("# {}\n".format(time.strftime("%d/%m/%Y %H:%M:%S")))
     output_file.write("# time id x y width height\n")
     frame_queue = queue.Queue(maxsize=arguments.buffer)
     video_reader = bach.video.VideoReader(video, frame_queue, arguments.timeout)
