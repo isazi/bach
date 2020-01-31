@@ -185,7 +185,7 @@ def video_detection(arguments, video_queue, output_file):
             print("# Entities: {}".format(len(entities)))
         # Store and show output
         for entity in entities:
-            if entity.marker() == -1:
+            if not arguments.debug and entity.marker() == -1:
                 continue
             output_file.write("{} {} {} {} {} {}\n".format(frame_counter,
                                                            entity.marker(),
