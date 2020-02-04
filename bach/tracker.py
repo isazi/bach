@@ -149,7 +149,6 @@ def video_detection(arguments, video_queue, output_file):
                 print("# Queue size: {}".format(video_queue.qsize()))
         except queue.Empty:
             break
-        frame_counter = frame_counter + 1
         if arguments.debug:
             print("# Frame: {}".format(frame_counter))
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
@@ -204,6 +203,7 @@ def video_detection(arguments, video_queue, output_file):
                 break
         if arguments.debug:
             print()
+        frame_counter = frame_counter + 1
     cv2.destroyAllWindows()
 
 
