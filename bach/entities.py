@@ -15,9 +15,11 @@ class Entity:
         self.detections = 1
         self.markers = dict()
         self.markers[marker] = 1
-        self.position = None
         self.box = None
         self.distance = 0
+
+    def position(self):
+        return self.box.center
 
     def marker(self):
         """
@@ -33,7 +35,7 @@ class Entity:
         Check if two entities are the same.
         """
         if self.label == other.label and self.marker() == other.marker():
-            if isclose(self.position.x, other.position.x) and isclose(self.position.y, other.position.y):
+            if isclose(self.position().x, other.position().x) and isclose(self.position().y, other.position().y):
                 return True
         return False
 
@@ -75,8 +77,8 @@ class Entity:
         Update the position of the entity.
         """
         if average:
-            new_position = bach.geometry.Point(self.position.x + ((point.x - self.position.x) / self.detections),
-                                               self.position.y + ((point.y - self.position.y) / self.detections))
+            new_position = bach.geometry.Point(self.position().x + ((point.x - self.position().x) / self.detections),
+                                               self.position().y + ((point.y - self.position().y) / self.detections))
             self.width = self.width + ((width - self.width) / self.detections)
             self.height = self.height + ((height - self.height) / self.detections)
         else:

@@ -114,7 +114,7 @@ def detect_aruco(arguments, aruco_markers, entities):
             if entity.contains(point):
                 if arguments.debug:
                     print("#\t\tArUco overlap \"{} {}\": {}".format(entity.label, entity.marker(), label))
-                votes.append((entity.position.distance(point), label, entity))
+                votes.append((entity.position().distance(point), label, entity))
     votes.sort(key=lambda item: item[0])
     assigned_labels = set()
     assigned_entities = set()
@@ -149,7 +149,6 @@ def video_detection(arguments, video_queue, output_file):
                 print("# Queue size: {}".format(video_queue.qsize()))
         except queue.Empty:
             break
-        frame_counter = frame_counter + 1
         if arguments.debug:
             print("# Frame: {}".format(frame_counter))
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
@@ -161,8 +160,7 @@ def video_detection(arguments, video_queue, output_file):
         for detection in detections:
             entity = bach.entities.Entity(label=detection[0], color=detector.colors[detection[0]],
                                           width=detection[2][2], height=detection[2][3], seen=frame_counter)
-            entity.position = bach.geometry.Point(detection[2][0], detection[2][1])
-            entity.box = bach.geometry.Rectangle(entity.position, entity.width, entity.height)
+            entity.box = bach.geometry.Rectangle(bach.geometry.Point(detection[2][0], detection[2][1]), entity.width, entity.height)
             entities.append(entity)
             if arguments.debug:
                 print("#\tNew entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
@@ -189,8 +187,8 @@ def video_detection(arguments, video_queue, output_file):
                 continue
             output_file.write("{} {} {} {} {} {}\n".format(frame_counter,
                                                            entity.marker(),
-                                                           entity.position.x,
-                                                           entity.position.y,
+                                                           entity.position().x,
+                                                           entity.position().y,
                                                            entity.width,
                                                            entity.height))
         if arguments.video_output:
@@ -204,6 +202,7 @@ def video_detection(arguments, video_queue, output_file):
                 break
         if arguments.debug:
             print()
+        frame_counter = frame_counter + 1
     cv2.destroyAllWindows()
 
 
