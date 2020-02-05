@@ -19,6 +19,9 @@ class Entity:
         self.distance = 0
 
     def position(self):
+        """
+        Return the position of the entity.
+        """
         return self.box.center
 
     def marker(self):

@@ -66,8 +66,9 @@ def detect_entities(arguments, entities, detections, frame_counter):
     detection_id = 0
     votes = list()
     for detection in detections:
-        new_position = bach.geometry.Point(detection[2][0], detection[2][1])
-        new_box = bach.geometry.Rectangle(new_position, detection[2][2], detection[2][3])
+        new_box = bach.geometry.Rectangle(bach.geometry.Point(detection[2][0], detection[2][1]),
+                                          detection[2][2],
+                                          detection[2][3])
         if arguments.debug:
             print("#\tDetection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
                                                                               new_box.top_left().y,
@@ -160,7 +161,9 @@ def video_detection(arguments, video_queue, output_file):
         for detection in detections:
             entity = bach.entities.Entity(label=detection[0], color=detector.colors[detection[0]],
                                           width=detection[2][2], height=detection[2][3], seen=frame_counter)
-            entity.box = bach.geometry.Rectangle(bach.geometry.Point(detection[2][0], detection[2][1]), entity.width, entity.height)
+            entity.box = bach.geometry.Rectangle(bach.geometry.Point(detection[2][0], detection[2][1]),
+                                                 entity.width,
+                                                 entity.height)
             entities.append(entity)
             if arguments.debug:
                 print("#\tNew entity \"{} {}\": position tl ({}, {}), br ({}, {}), w {}, h {}".format(
