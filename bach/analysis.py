@@ -32,7 +32,6 @@ def analysis(arguments, input_file):
                                           width=float(items[4]),
                                           height=float(items[5]),
                                           seen=frame_counter)
-            entity.position = new_point
             entity.box = bach.geometry.Rectangle(new_point, float(items[4]), float(items[5]))
             entities[items[1]] = entity
         # Behavior detection
