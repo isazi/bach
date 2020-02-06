@@ -88,7 +88,7 @@ class Entity:
             new_position = point
             self.width = width
             self.height = height
-        self.distance = self.distance + bach.geometry.distance(self.position, new_position)
+        self.distance = self.distance + bach.geometry.distance(self.position(), new_position)
         self.box.update(new_position, self.width, self.height)
 
     def average_speed(self):
