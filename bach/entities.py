@@ -94,6 +94,7 @@ class Entity:
             self.speed = bach.geometry.distance(self.position(), new_position) / (seen - self.last_seen)
         self.box.update(new_position, self.width, self.height)
         self.last_seen = seen
+        self.detections = self.detections + 1
 
     def average_speed(self):
         """
