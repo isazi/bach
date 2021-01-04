@@ -14,31 +14,34 @@ def command_line():
 
 def analysis(arguments, input_file):
     entities = dict()
-    encounters = list()
     for line in input_file:
         if line[0] == "#":
             continue
         items = line.split(sep=" ")
         frame_counter = int(items[0])
+        entity_id = int(items[1])
         new_point = bach.geometry.Point(float(items[2]), float(items[3]))
-        if items[1] in entities:
-            entities[items[1]].update_position(new_point, float(items[4]), float(items[5]))
-            entities[items[1]].last_seen = frame_counter
+        if entity_id in entities:
+            entities[entity_id].update_position(new_point, float(items[4]), float(items[5]), frame_counter)
         else:
-            entity = bach.entities.Entity(marker=int(items[1]),
+            entity = bach.entities.Entity(marker=entity_id,
                                           width=float(items[4]),
                                           height=float(items[5]),
                                           seen=frame_counter)
             entity.box = bach.geometry.Rectangle(new_point, float(items[4]), float(items[5]))
-            entities[items[1]] = entity
-        # Entity's average speed
-        for entity in entities:
-            print(entity)
-        # Clean up
-        if arguments.debug:
-            print("# Entities: {}".format(len(entities)))
-        if arguments.debug:
-            print()
+            entities[entity_id] = entity
+        # Entity's current speed
+        if entity_id != -1:
+            print("{} {} {}".format(frame_counter, entity_id, entities[entity_id].speed))
+    # Entity's average speed
+    for entity_id in entities:
+        if entity_id != -1:
+            print("{} {}".format(entity_id, entities[entity_id].average_speed()))
+    # Clean up
+    if arguments.debug:
+        print("# Entities: {}".format(len(entities)))
+    if arguments.debug:
+        print()
 
 
 def __main__():
