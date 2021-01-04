@@ -17,6 +17,7 @@ class Entity:
         self.markers[marker] = 1
         self.box = None
         self.distance = 0
+        self.speed = 0.0
 
     def position(self):
         """
@@ -75,7 +76,7 @@ class Entity:
         except KeyError:
             self.markers[marker] = 1
 
-    def update_position(self, point, width, height, average=False):
+    def update_position(self, point, width, height, seen, average=False):
         """
         Update the position of the entity.
         """
@@ -89,10 +90,13 @@ class Entity:
             self.width = width
             self.height = height
         self.distance = self.distance + bach.geometry.distance(self.position(), new_position)
+        if (seen - self.last_seen) > 0:
+            self.speed = bach.geometry.distance(self.position(), new_position) / (seen - self.last_seen)
         self.box.update(new_position, self.width, self.height)
+        self.last_seen = seen
 
     def average_speed(self):
         """
         Return the average speed of the entity, in pixels per frame.
         """
-        return self.distance / self.last_seen
+        return self.distance / self.detections
