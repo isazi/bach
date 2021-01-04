@@ -94,10 +94,12 @@ def detect_entities(arguments, entities, detections, frame_counter):
             assigned_detections.add(detections[detection])
             assigned_entities.add(entity)
             entity.detections = entity.detections + 1
-            entity.update_position(bach.geometry.Point(detections[detection][2][0], detections[detection][2][1]),
+            entity.update_position(bach.geometry.Point(detections[detection][2][0],
+                                                       detections[detection][2][1]),
                                    detections[detection][2][2],
-                                   detections[detection][2][3])
-            entity.last_seen = frame_counter
+                                   detections[detection][2][3],
+                                   frame_counter
+                                   )
             if arguments.debug:
                 print("#\tUpdate entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
                     entity.label, entity.marker(), entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
