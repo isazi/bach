@@ -14,6 +14,7 @@ def command_line():
 
 def analysis(arguments, input_file):
     entities = dict()
+    # Instant speed and distance since previous detection
     print("# frame id speed distance")
     for line in input_file:
         if line[0] == "#":
@@ -33,9 +34,9 @@ def analysis(arguments, input_file):
                                           seen=frame_counter)
             entity.box = bach.geometry.Rectangle(new_point, float(items[4]), float(items[5]))
             entities[entity_id] = entity
-        # Entity's current speed and distance travelled
         if entity_id != -1:
             print("{} {} {} {}".format(frame_counter, entity_id, entities[entity_id].speed, distance))
+    print("\n\n")
     # Entity's average speed and total distance
     print("# id average_speed total_distance")
     for entity_id in entities:
@@ -43,6 +44,7 @@ def analysis(arguments, input_file):
             print("# {} {} {}".format(entity_id, entities[entity_id].average_speed(), entities[entity_id].distance))
     # Clean up
     if arguments.debug:
+        print("\n\n")
         print("# Entities: {}".format(len(entities)))
         print()
 
