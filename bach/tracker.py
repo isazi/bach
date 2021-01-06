@@ -221,7 +221,7 @@ def __main__():
         exit(-1)
     output_file = open(arguments.output_file, "w")
     output_file.write("# {}\n".format(time.strftime("%Y/%m/%d %H:%M:%S")))
-    output_file.write("# time id x y width height\n")
+    output_file.write("# frame id x y width height\n")
     frame_queue = queue.Queue(maxsize=arguments.buffer)
     video_reader = bach.video.VideoReader(video, frame_queue, arguments.timeout)
     video_reader.start()
