@@ -93,11 +93,12 @@ def detect_entities(arguments, entities, detections, frame_counter):
         if (detections[detection] not in assigned_detections) and (entity not in assigned_entities):
             assigned_detections.add(detections[detection])
             assigned_entities.add(entity)
-            entity.detections = entity.detections + 1
-            entity.update_position(bach.geometry.Point(detections[detection][2][0], detections[detection][2][1]),
+            entity.update_position(bach.geometry.Point(detections[detection][2][0],
+                                                       detections[detection][2][1]),
                                    detections[detection][2][2],
-                                   detections[detection][2][3])
-            entity.last_seen = frame_counter
+                                   detections[detection][2][3],
+                                   frame_counter
+                                   )
             if arguments.debug:
                 print("#\tUpdate entity \"{} {}\": new position tl ({}, {}), br ({}, {}), w {}, h {}".format(
                     entity.label, entity.marker(), entity.top_left().x, entity.top_left().y, entity.bottom_right().x,
@@ -219,8 +220,8 @@ def __main__():
         print("Impossible to save output.")
         exit(-1)
     output_file = open(arguments.output_file, "w")
-    output_file.write("# {}\n".format(time.strftime("%d/%m/%Y %H:%M:%S")))
-    output_file.write("# time id x y width height\n")
+    output_file.write("# {}\n".format(time.strftime("%Y/%m/%d %H:%M:%S")))
+    output_file.write("# frame id x y width height\n")
     frame_queue = queue.Queue(maxsize=arguments.buffer)
     video_reader = bach.video.VideoReader(video, frame_queue, arguments.timeout)
     video_reader.start()
