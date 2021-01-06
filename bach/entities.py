@@ -3,7 +3,7 @@ import bach.geometry
 
 
 class Entity:
-    def __init__(self, label="", marker=-1, color=(0, 0, 0), width=1, height=1, seen=None):
+    def __init__(self, label="", marker=-1, color=(0, 0, 0), width=1, height=1, seen=1):
         """
         Default constructor.
         """
@@ -12,6 +12,7 @@ class Entity:
         self.width = width
         self.height = height
         self.last_seen = seen
+        self.first_seen = seen
         self.detections = 1
         self.markers = dict()
         self.markers[marker] = 1
@@ -76,19 +77,13 @@ class Entity:
         except KeyError:
             self.markers[marker] = 1
 
-    def update_position(self, point, width, height, seen, average=False):
+    def update_position(self, point, width, height, seen):
         """
         Update the position of the entity.
         """
-        if average:
-            new_position = bach.geometry.Point(self.position().x + ((point.x - self.position().x) / self.detections),
-                                               self.position().y + ((point.y - self.position().y) / self.detections))
-            self.width = self.width + ((width - self.width) / self.detections)
-            self.height = self.height + ((height - self.height) / self.detections)
-        else:
-            new_position = point
-            self.width = width
-            self.height = height
+        new_position = point
+        self.width = width
+        self.height = height
         self.distance = self.distance + bach.geometry.distance(self.position(), new_position)
         if (seen - self.last_seen) > 0:
             self.speed = bach.geometry.distance(self.position(), new_position) / (seen - self.last_seen)
@@ -100,4 +95,4 @@ class Entity:
         """
         Return the average speed of the entity, in pixels per frame.
         """
-        return self.distance / self.detections
+        return self.distance / (self.last_seen - self.first_seen)
