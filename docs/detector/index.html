@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>detector module &#8212; BACH  documentation</title>
+    <title>detector module &#8212; BACH 0.1 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -30,8 +30,38 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="detector-module">
-<h1>detector module<a class="headerlink" href="#detector-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-detector">
+<span id="detector-module"></span><h1>detector module<a class="headerlink" href="#module-detector" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="detector.Detector">
+<em class="property">class </em><code class="sig-prename descclassname">detector.</code><code class="sig-name descname">Detector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">configuration</span></em>, <em class="sig-param"><span class="n">meta</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/detector/#Detector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#detector.Detector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt id="detector.Detector.detect_markers">
+<code class="sig-name descname">detect_markers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">frame</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/detector/#Detector.detect_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#detector.Detector.detect_markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect ArUco markers in a frame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="detector.Detector.detect_objects">
+<em class="property">static </em><code class="sig-name descname">detect_objects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">frame</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.5</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/detector/#Detector.detect_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#detector.Detector.detect_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process a frame through the neural network and return detected objects.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="detector.Detector.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/detector/#Detector.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#detector.Detector.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the detector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="detector.Detector.preprocess_frame">
+<em class="property">static </em><code class="sig-name descname">preprocess_frame</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">frame</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/detector/#Detector.preprocess_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#detector.Detector.preprocess_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess a frame before detection.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

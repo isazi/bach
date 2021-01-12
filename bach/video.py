@@ -57,8 +57,8 @@ class Webcam(Video):
         self.video.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
         self.video.set(cv2.CAP_PROP_FPS, self.fps)
-        self.video.set(cv2.CAP_PROP_AUTOFOCUS, True)
-        self.video.set(cv2.CAP_PROP_AUTO_WB, True)
+        self.video.set(cv2.CAP_PROP_AUTOFOCUS, 1)
+        self.video.set(cv2.CAP_PROP_AUTO_WB, 1)
         self.video.set(cv2.CAP_PROP_BRIGHTNESS, 130)
 
 

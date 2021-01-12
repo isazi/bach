@@ -2,7 +2,7 @@ import argparse
 import bach.video
 
 
-def command_line():
+def command_line() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     # Devices
     parser.add_argument("--webcam", help="The ID of the webcam", type=int)
@@ -16,7 +16,7 @@ def command_line():
     return parser.parse_args()
 
 
-def initialize_input(arguments):
+def initialize_input(arguments: argparse.Namespace):
     """
     Initialize the input.
     """
