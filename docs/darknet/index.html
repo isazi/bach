@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>darknet module &#8212; BACH  documentation</title>
+    <title>darknet module &#8212; BACH 0.1 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -30,8 +30,235 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="darknet-module">
-<h1>darknet module<a class="headerlink" href="#darknet-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-darknet">
+<span id="darknet-module"></span><h1>darknet module<a class="headerlink" href="#module-darknet" title="Permalink to this headline">¶</a></h1>
+<p>Python 3 wrapper for identifying objects in images</p>
+<p>Requires DLL compilation</p>
+<p>Both the GPU and no-GPU version should be compiled; the no-GPU version should be renamed “yolo_cpp_dll_nogpu.dll”.</p>
+<p>On a GPU system, you can force CPU evaluation by any of:</p>
+<ul class="simple">
+<li><p>Set global variable DARKNET_FORCE_CPU to True</p></li>
+<li><p>Set environment variable CUDA_VISIBLE_DEVICES to -1</p></li>
+<li><p>Set environment variable “FORCE_CPU” to “true”</p></li>
+</ul>
+<p>To use, either run performDetect() after import, or modify the end of this file.</p>
+<p>See the docstring of performDetect() for parameters.</p>
+<p>Directly viewing or returning bounding-boxed images requires scikit-image to be installed (<cite>pip install scikit-image</cite>)</p>
+<p>Original <a href="#id1"><span class="problematic" id="id2">*</span></a>nix 2.7: <a class="reference external" href="https://github.com/pjreddie/darknet/blob/0f110834f4e18b30d5f101bf8f1724c34b7b83db/python/darknet.py">https://github.com/pjreddie/darknet/blob/0f110834f4e18b30d5f101bf8f1724c34b7b83db/python/darknet.py</a>
+Windows Python 2.7 version: <a class="reference external" href="https://github.com/AlexeyAB/darknet/blob/fc496d52bf22a0bb257300d3c79be9cd80e722cb/build/darknet/x64/darknet.py">https://github.com/AlexeyAB/darknet/blob/fc496d52bf22a0bb257300d3c79be9cd80e722cb/build/darknet/x64/darknet.py</a></p>
+<p>&#64;author: Philip Kahn
+&#64;date: 20180503</p>
+<dl class="py class">
+<dt id="darknet.BOX">
+<em class="property">class </em><code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">BOX</code><a class="reference internal" href="../_modules/darknet/#BOX"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.BOX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ctypes.Structure</span></code></p>
+<dl class="py attribute">
+<dt id="darknet.BOX.h">
+<code class="sig-name descname">h</code><a class="headerlink" href="#darknet.BOX.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.BOX.w">
+<code class="sig-name descname">w</code><a class="headerlink" href="#darknet.BOX.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.BOX.x">
+<code class="sig-name descname">x</code><a class="headerlink" href="#darknet.BOX.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.BOX.y">
+<code class="sig-name descname">y</code><a class="headerlink" href="#darknet.BOX.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="darknet.DETECTION">
+<em class="property">class </em><code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">DETECTION</code><a class="reference internal" href="../_modules/darknet/#DETECTION"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.DETECTION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ctypes.Structure</span></code></p>
+<dl class="py attribute">
+<dt id="darknet.DETECTION.bbox">
+<code class="sig-name descname">bbox</code><a class="headerlink" href="#darknet.DETECTION.bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.DETECTION.classes">
+<code class="sig-name descname">classes</code><a class="headerlink" href="#darknet.DETECTION.classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.DETECTION.mask">
+<code class="sig-name descname">mask</code><a class="headerlink" href="#darknet.DETECTION.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.DETECTION.objectness">
+<code class="sig-name descname">objectness</code><a class="headerlink" href="#darknet.DETECTION.objectness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.DETECTION.points">
+<code class="sig-name descname">points</code><a class="headerlink" href="#darknet.DETECTION.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.DETECTION.prob">
+<code class="sig-name descname">prob</code><a class="headerlink" href="#darknet.DETECTION.prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.DETECTION.sort_class">
+<code class="sig-name descname">sort_class</code><a class="headerlink" href="#darknet.DETECTION.sort_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.DETECTION.uc">
+<code class="sig-name descname">uc</code><a class="headerlink" href="#darknet.DETECTION.uc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="darknet.IMAGE">
+<em class="property">class </em><code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">IMAGE</code><a class="reference internal" href="../_modules/darknet/#IMAGE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.IMAGE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ctypes.Structure</span></code></p>
+<dl class="py attribute">
+<dt id="darknet.IMAGE.c">
+<code class="sig-name descname">c</code><a class="headerlink" href="#darknet.IMAGE.c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.IMAGE.data">
+<code class="sig-name descname">data</code><a class="headerlink" href="#darknet.IMAGE.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.IMAGE.h">
+<code class="sig-name descname">h</code><a class="headerlink" href="#darknet.IMAGE.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.IMAGE.w">
+<code class="sig-name descname">w</code><a class="headerlink" href="#darknet.IMAGE.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="darknet.METADATA">
+<em class="property">class </em><code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">METADATA</code><a class="reference internal" href="../_modules/darknet/#METADATA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.METADATA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ctypes.Structure</span></code></p>
+<dl class="py attribute">
+<dt id="darknet.METADATA.classes">
+<code class="sig-name descname">classes</code><a class="headerlink" href="#darknet.METADATA.classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="darknet.METADATA.names">
+<code class="sig-name descname">names</code><a class="headerlink" href="#darknet.METADATA.names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structure/Union member</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="darknet.array_to_image">
+<code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">array_to_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arr</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darknet/#array_to_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.array_to_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="darknet.c_array">
+<code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">c_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctype</span></em>, <em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darknet/#c_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.c_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="darknet.classify">
+<code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">classify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net</span></em>, <em class="sig-param"><span class="n">meta</span></em>, <em class="sig-param"><span class="n">im</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darknet/#classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.classify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="darknet.detect">
+<code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">detect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net</span></em>, <em class="sig-param"><span class="n">meta</span></em>, <em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">thresh</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">hier_thresh</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">nms</span><span class="o">=</span><span class="default_value">0.45</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darknet/#detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.detect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs the meat of the detection</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darknet.detect_image">
+<code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">detect_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net</span></em>, <em class="sig-param"><span class="n">meta</span></em>, <em class="sig-param"><span class="n">im</span></em>, <em class="sig-param"><span class="n">thresh</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">hier_thresh</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">nms</span><span class="o">=</span><span class="default_value">0.45</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darknet/#detect_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.detect_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="darknet.network_height">
+<code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">network_height</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darknet/#network_height"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.network_height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="darknet.network_width">
+<code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">network_width</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">net</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darknet/#network_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.network_width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="darknet.performDetect">
+<code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">performDetect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">imagePath</span><span class="o">=</span><span class="default_value">'data/dog.jpg'</span></em>, <em class="sig-param"><span class="n">thresh</span><span class="o">=</span><span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">configPath</span><span class="o">=</span><span class="default_value">'./cfg/yolov3.cfg'</span></em>, <em class="sig-param"><span class="n">weightPath</span><span class="o">=</span><span class="default_value">'yolov3.weights'</span></em>, <em class="sig-param"><span class="n">metaPath</span><span class="o">=</span><span class="default_value">'./cfg/coco.data'</span></em>, <em class="sig-param"><span class="n">showImage</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">makeImageOnly</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">initOnly</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darknet/#performDetect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.performDetect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function to handle the detection and returns of objects.</p>
+<p>Displaying bounding boxes requires libraries scikit-image and numpy</p>
+<dl class="simple">
+<dt>imagePath: str</dt><dd><p>Path to the image to evaluate. Raises ValueError if not found</p>
+</dd>
+<dt>thresh: float (default= 0.25)</dt><dd><p>The detection threshold</p>
+</dd>
+<dt>configPath: str</dt><dd><p>Path to the configuration file. Raises ValueError if not found</p>
+</dd>
+<dt>weightPath: str</dt><dd><p>Path to the weights file. Raises ValueError if not found</p>
+</dd>
+<dt>metaPath: str</dt><dd><p>Path to the data file. Raises ValueError if not found</p>
+</dd>
+<dt>showImage: bool (default= True)</dt><dd><p>Compute (and show) bounding boxes. Changes return.</p>
+</dd>
+<dt>makeImageOnly: bool (default= False)</dt><dd><p>If showImage is True, this won’t actually <em>show</em> the image, but will create the array and return it.</p>
+</dd>
+<dt>initOnly: bool (default= False)</dt><dd><p>Only initialize globals. Don’t actually run a prediction.</p>
+</dd>
+</dl>
+<dl>
+<dt>When showImage is False, list of tuples like</dt><dd><p>(‘obj_label’, confidence, (bounding_box_x_px, bounding_box_y_px, bounding_box_width_px, bounding_box_height_px))
+The X and Y coordinates are from the center of the bounding box. Subtract half the width or height to get the lower corner.</p>
+</dd>
+<dt>Otherwise, a dict with</dt><dd><dl class="simple">
+<dt>{</dt><dd><p>“detections”: as above
+“image”: a numpy array representing an image, compatible with scikit-image
+“caption”: an image caption</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="darknet.sample">
+<code class="sig-prename descclassname">darknet.</code><code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">probs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/darknet/#sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#darknet.sample" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 
 
