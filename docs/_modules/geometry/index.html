@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geometry &#8212; BACH  documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for geometry</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="Point"><a class="viewcode-back" href="../../geometry/#geometry.Point">[docs]</a><span class="k">class</span> <span class="nc">Point</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+
+<div class="viewcode-block" id="Point.distance"><a class="viewcode-back" href="../../geometry/#geometry.Point.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the Euclidean distance to another point.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Rectangle"><a class="viewcode-back" href="../../geometry/#geometry.Rectangle">[docs]</a><span class="k">class</span> <span class="nc">Rectangle</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="n">center</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">center</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">height</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">height</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Rectangle.update"><a class="viewcode-back" href="../../geometry/#geometry.Rectangle.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the position of the rectangle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">center</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">center</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">height</span></div>
+
+<div class="viewcode-block" id="Rectangle.top_left"><a class="viewcode-back" href="../../geometry/#geometry.Rectangle.top_left">[docs]</a>    <span class="k">def</span> <span class="nf">top_left</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the top left point of the rectangle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Rectangle.bottom_right"><a class="viewcode-back" href="../../geometry/#geometry.Rectangle.bottom_right">[docs]</a>    <span class="k">def</span> <span class="nf">bottom_right</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the bottom right point of the rectangle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Rectangle.area"><a class="viewcode-back" href="../../geometry/#geometry.Rectangle.area">[docs]</a>    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the area of the rectangle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span></div>
+
+<div class="viewcode-block" id="Rectangle.contains"><a class="viewcode-back" href="../../geometry/#geometry.Rectangle.contains">[docs]</a>    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the point is contained within the rectangle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">))</span> \
+                <span class="ow">and</span> <span class="p">((</span><span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Rectangle.overlap"><a class="viewcode-back" href="../../geometry/#geometry.Rectangle.overlap">[docs]</a>    <span class="k">def</span> <span class="nf">overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if two rectangles overlap by any margin.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">vertex</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">vertices</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">vertex</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="n">overlap_x</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">))</span> <span class="ow">or</span> \
+                <span class="p">((</span><span class="n">other</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">)):</span>
+            <span class="n">overlap_x</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">overlap_y</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">))</span> <span class="ow">or</span> \
+                <span class="p">((</span><span class="n">other</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">)):</span>
+            <span class="n">overlap_y</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">overlap_x</span> <span class="ow">and</span> <span class="n">overlap_y</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Rectangle.overlap_area"><a class="viewcode-back" href="../../geometry/#geometry.Rectangle.overlap_area">[docs]</a>    <span class="k">def</span> <span class="nf">overlap_area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Measure the area of the overlap between two rectangles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">overlap_area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="distance"><a class="viewcode-back" href="../../geometry/#geometry.distance">[docs]</a><span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">point_one</span><span class="p">,</span> <span class="n">point_two</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the Euclidean distance between two points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">point_one</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">point_two</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">point_one</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">point_two</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="overlap_area"><a class="viewcode-back" href="../../geometry/#geometry.overlap_area">[docs]</a><span class="k">def</span> <span class="nf">overlap_area</span><span class="p">(</span><span class="n">rectangle_one</span><span class="p">,</span> <span class="n">rectangle_two</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the area of the overlap between two rectangles.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">inside_vertices</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">vertices</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rectangle_one</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">vertex</span><span class="p">):</span>
+            <span class="n">inside_vertices</span> <span class="o">=</span> <span class="n">inside_vertices</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">inside_vertices</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">rectangle_one</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span><span class="n">rectangle_two</span><span class="p">):</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">rectangle_one</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">rectangle_one</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                     <span class="n">rectangle_two</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">])</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">rectangle_one</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">rectangle_one</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                     <span class="n">rectangle_two</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">inside_vertices</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">rectangle_two</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">rectangle_one</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                     <span class="n">rectangle_one</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">])</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">rectangle_two</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">rectangle_one</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                      <span class="n">rectangle_one</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">inside_vertices</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">rectangle_two</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+             <span class="n">rectangle_two</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">rectangle_one</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+             <span class="n">rectangle_one</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">rectangle_two</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+             <span class="n">rectangle_two</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">rectangle_one</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+             <span class="n">rectangle_one</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">()</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">top_left</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">inside_vertices</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">width</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">rectangle_two</span><span class="o">.</span><span class="n">height</span>
+    <span class="k">return</span> <span class="n">width</span> <span class="o">*</span> <span class="n">height</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../">BACH</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../">Documentation overview</a><ul>
+  <li><a href="../">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search/" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Alessio Sclocco, Serafino Teseo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

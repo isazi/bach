@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>geometry module &#8212; BACH  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-geometry">
+<span id="geometry-module"></span><h1>geometry module<a class="headerlink" href="#module-geometry" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="geometry.Point">
+<em class="property">class </em><code class="sig-prename descclassname">geometry.</code><code class="sig-name descname">Point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.Point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt id="geometry.Point.distance">
+<code class="sig-name descname">distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">point</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#Point.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.Point.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Euclidean distance to another point.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="geometry.Rectangle">
+<em class="property">class </em><code class="sig-prename descclassname">geometry.</code><code class="sig-name descname">Rectangle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">width</span></em>, <em class="sig-param"><span class="n">height</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#Rectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.Rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt id="geometry.Rectangle.area">
+<code class="sig-name descname">area</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#Rectangle.area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.Rectangle.area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the area of the rectangle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geometry.Rectangle.bottom_right">
+<code class="sig-name descname">bottom_right</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#Rectangle.bottom_right"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.Rectangle.bottom_right" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bottom right point of the rectangle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geometry.Rectangle.contains">
+<code class="sig-name descname">contains</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">point</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#Rectangle.contains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.Rectangle.contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the point is contained within the rectangle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geometry.Rectangle.overlap">
+<code class="sig-name descname">overlap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#Rectangle.overlap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.Rectangle.overlap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if two rectangles overlap by any margin.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geometry.Rectangle.overlap_area">
+<code class="sig-name descname">overlap_area</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#Rectangle.overlap_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.Rectangle.overlap_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Measure the area of the overlap between two rectangles.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geometry.Rectangle.top_left">
+<code class="sig-name descname">top_left</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#Rectangle.top_left"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.Rectangle.top_left" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the top left point of the rectangle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geometry.Rectangle.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">width</span></em>, <em class="sig-param"><span class="n">height</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#Rectangle.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.Rectangle.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the position of the rectangle.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="geometry.distance">
+<code class="sig-prename descclassname">geometry.</code><code class="sig-name descname">distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">point_one</span></em>, <em class="sig-param"><span class="n">point_two</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Euclidean distance between two points.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="geometry.overlap_area">
+<code class="sig-prename descclassname">geometry.</code><code class="sig-name descname">overlap_area</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rectangle_one</span></em>, <em class="sig-param"><span class="n">rectangle_two</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/geometry/#overlap_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#geometry.overlap_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the area of the overlap between two rectangles.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../">BACH</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Alessio Sclocco, Serafino Teseo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/geometry.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

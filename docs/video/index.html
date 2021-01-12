@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>video module &#8212; BACH  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-video">
+<span id="video-module"></span><h1>video module<a class="headerlink" href="#module-video" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="video.Video">
+<em class="property">class </em><code class="sig-prename descclassname">video.</code><code class="sig-name descname">Video</code><a class="reference internal" href="../_modules/video/#Video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.Video" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt id="video.Video.get_frame">
+<code class="sig-name descname">get_frame</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gray</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#Video.get_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.Video.get_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current frame from the video.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="video.Video.ready">
+<code class="sig-name descname">ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#Video.ready"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.Video.ready" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the video is ready.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="video.VideoFile">
+<em class="property">class </em><code class="sig-prename descclassname">video.</code><code class="sig-name descname">VideoFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#VideoFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.VideoFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#video.Video" title="video.Video"><code class="xref py py-class docutils literal notranslate"><span class="pre">video.Video</span></code></a></p>
+<dl class="py method">
+<dt id="video.VideoFile.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#VideoFile.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.VideoFile.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open video file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="video.VideoReader">
+<em class="property">class </em><code class="sig-prename descclassname">video.</code><code class="sig-name descname">VideoReader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">video</span></em>, <em class="sig-param"><span class="n">buffer</span></em>, <em class="sig-param"><span class="n">timeout</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#VideoReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.VideoReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></a></p>
+<dl class="py method">
+<dt id="video.VideoReader.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#VideoReader.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.VideoReader.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method representing the thread’s activity.</p>
+<p>You may override this method in a subclass. The standard run() method
+invokes the callable object passed to the object’s constructor as the
+target argument, if any, with sequential and keyword arguments taken
+from the args and kwargs arguments, respectively.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="video.VideoWriter">
+<em class="property">class </em><code class="sig-prename descclassname">video.</code><code class="sig-name descname">VideoWriter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">640</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">480</span></em>, <em class="sig-param"><span class="n">fps</span><span class="o">=</span><span class="default_value">25</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#VideoWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.VideoWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt id="video.VideoWriter.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#VideoWriter.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.VideoWriter.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open output file and initialize video codec.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="video.VideoWriter.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">frame</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#VideoWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.VideoWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a frame in the file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="video.Webcam">
+<em class="property">class </em><code class="sig-prename descclassname">video.</code><code class="sig-name descname">Webcam</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">webcam_id</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">640</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">480</span></em>, <em class="sig-param"><span class="n">fps</span><span class="o">=</span><span class="default_value">25</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#Webcam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.Webcam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#video.Video" title="video.Video"><code class="xref py py-class docutils literal notranslate"><span class="pre">video.Video</span></code></a></p>
+<dl class="py method">
+<dt id="video.Webcam.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#Webcam.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.Webcam.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize capture device.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="video.frame_extraction">
+<code class="sig-prename descclassname">video.</code><code class="sig-name descname">frame_extraction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">video</span></em>, <em class="sig-param"><span class="n">output_file</span></em>, <em class="sig-param"><span class="n">reduction</span><span class="o">=</span><span class="default_value">5</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/video/#frame_extraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#video.frame_extraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract frames from a video and store them as images.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../">BACH</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Alessio Sclocco, Serafino Teseo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/video.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
