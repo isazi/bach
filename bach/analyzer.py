@@ -1,10 +1,12 @@
+import typing
 import argparse
+
 import bach.geometry
 import bach.entities
 import bach.behavior
 
 
-def command_line():
+def command_line() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     # Input file
     parser.add_argument("--input_file", help="The file containing the position of individuals", required=True, type=str)
@@ -16,12 +18,21 @@ def command_line():
     return parser.parse_args()
 
 
-def analysis(arguments, input_file):
+def is_distance_enabled(arguments: argparse.Namespace) -> bool:
+    """
+    Return True if computing the distance between entities is enabled, False otherwise.
+    """
+    if arguments.distance_file is not None:
+        return True
+    return False
+
+
+def analysis(arguments: argparse.Namespace, input_file: typing.TextIO):
     previous_frame = 0
     entities = dict()
     distances = dict()
     distance_file = None
-    if arguments.distance_file is not None:
+    if is_distance_enabled(arguments):
         distance_file = open(arguments.distance_file, "w+")
         distance_file.write("# frame id id distance\n")
     print("# frame id speed distance")
@@ -44,16 +55,15 @@ def analysis(arguments, input_file):
             entity.box = bach.geometry.Rectangle(new_point, float(items[4]), float(items[5]))
             entities[entity_id] = entity
         # Output distance
-        if arguments.distance_file is not None:
-            if frame_id > previous_frame:
-                for pair in distances:
-                    distance_file.write("{} {} {}\n".format(previous_frame, pair, distances[pair]))
-                distances.clear()
+        if is_distance_enabled(arguments) and (frame_id > previous_frame):
+            for pair in distances:
+                distance_file.write("{} {} {}\n".format(previous_frame, pair, distances[pair]))
+            distances.clear()
         # Output distance travelled and speed
         if entity_id != -1:
             print("{} {} {} {}".format(frame_id, entity_id, entities[entity_id].speed, distance))
         # Update distances
-        if (arguments.distance_file is not None) and (entity_id != -1):
+        if is_distance_enabled(arguments) and (entity_id != -1):
             for other_id in entities:
                 if (entity_id != other_id) and (other_id != -1):
                     if entity_id < other_id:
@@ -70,7 +80,7 @@ def analysis(arguments, input_file):
         if entity_id != -1:
             print("# {} {} {}".format(entity_id, entities[entity_id].average_speed(), entities[entity_id].distance))
     # Clean up
-    if arguments.distance_file is not None:
+    if is_distance_enabled(arguments):
         distance_file.close()
     if arguments.debug:
         print("\n\n")
