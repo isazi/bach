@@ -9,5 +9,5 @@
 To install BACH from the command line, using `pip` type:
 
 ```shell
-python -m pip install .
+python -m pip install -e .
 ```
