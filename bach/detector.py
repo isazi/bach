@@ -47,17 +47,6 @@ class Detector:
         self.aruco_parameters.detectInvertedMarker = False
         return True
 
-    def preprocess_frame(self, frame):
-        """
-        Preprocess a frame before detection.
-        """
-        processed_frame = frame.copy()
-        processed_frame = cv2.resize(processed_frame,
-                                     (darknet.lib.network_width(self.network),
-                                      darknet.lib.network_height(self.network)),
-                                     interpolation=cv2.INTER_NEAREST)
-        return processed_frame
-
     def detect_objects(self, frame, threshold=0.5):
         """
         Process a frame through the neural network and return detected objects.
@@ -65,7 +54,11 @@ class Detector:
         processed_image = darknet.make_image(darknet.network_width(self.network),
                                              darknet.network_height(self.network),
                                              3)
-        darknet.copy_image_from_bytes(processed_image, frame.tobytes())
+        processed_frame = cv2.resize(frame.copy(),
+                                     (darknet.lib.network_width(self.network),
+                                      darknet.lib.network_height(self.network)),
+                                     interpolation=cv2.INTER_NEAREST)
+        darknet.copy_image_from_bytes(processed_image, processed_frame.tobytes())
         detections = darknet.detect_image(self.network,
                                           self.classes,
                                           processed_image,

@@ -102,14 +102,14 @@ class Rectangle:
         return overlap_area(self, other)
 
 
-def distance(point_one, point_two):
+def distance(point_one: Point, point_two: Point):
     """
     Compute the Euclidean distance between two points.
     """
     return math.sqrt(math.pow(point_one.x - point_two.x, 2) + math.pow(point_one.y - point_two.y, 2))
 
 
-def overlap_area(rectangle_one, rectangle_two):
+def overlap_area(rectangle_one: Rectangle, rectangle_two: Rectangle):
     """
     Compute the area of the overlap between two rectangles.
     """
@@ -144,3 +144,10 @@ def overlap_area(rectangle_one, rectangle_two):
         width = rectangle_two.width
         height = rectangle_two.height
     return width * height
+
+
+def scale(x: float, original: float, new: float) -> float:
+    """
+    Scale a value "x" from the "original" to the "new" frame of reference.
+    """
+    return (x * new) / original

@@ -2,7 +2,8 @@ import argparse
 import cv2
 import queue
 import time
-from bach.darknet import set_gpu
+from threading import Thread
+from bach.darknet import set_gpu, network_width, network_height
 import bach.detector
 import bach.video
 import bach.graphics
@@ -62,13 +63,18 @@ def initialize_output(name, width, height, fps):
     return video
 
 
-def detect_entities(arguments, entities, detections, frame_counter):
+def detect_entities(arguments, entities, detections, frame_counter, detector_width, width, detector_height, height):
     detection_id = 0
     votes = list()
     for detection in detections:
-        new_box = bach.geometry.Rectangle(bach.geometry.Point(detection[2][0], detection[2][1]),
-                                          detection[2][2],
-                                          detection[2][3])
+        new_box = bach.geometry.Rectangle(bach.geometry.Point(bach.geometry.scale(detection[2][0],
+                                                                                  detector_width,
+                                                                                  width),
+                                                              bach.geometry.scale(detection[2][1],
+                                                                                  detector_height,
+                                                                                  height)),
+                                          bach.geometry.scale(detection[2][2], detector_width, width),
+                                          bach.geometry.scale(detection[2][3], detector_height, height))
         if arguments.debug:
             print("#\tDetection: tl ({}, {}), br ({}, {}), w {}, h {}".format(new_box.top_left().x,
                                                                               new_box.top_left().y,
@@ -93,10 +99,14 @@ def detect_entities(arguments, entities, detections, frame_counter):
         if (detections[detection] not in assigned_detections) and (entity not in assigned_entities):
             assigned_detections.add(detections[detection])
             assigned_entities.add(entity)
-            entity.update_position(bach.geometry.Point(detections[detection][2][0],
-                                                       detections[detection][2][1]),
-                                   detections[detection][2][2],
-                                   detections[detection][2][3],
+            entity.update_position(bach.geometry.Point(bach.geometry.scale(detections[detection][2][0],
+                                                                           detector_width,
+                                                                           width),
+                                                       bach.geometry.scale(detections[detection][2][1],
+                                                                           detector_height,
+                                                                           height)),
+                                   bach.geometry.scale(detections[detection][2][2], detector_width, width),
+                                   bach.geometry.scale(detections[detection][2][3], detector_height, height),
                                    frame_counter
                                    )
             if arguments.debug:
@@ -131,13 +141,15 @@ def detect_aruco(arguments, aruco_markers, entities):
                 print("#\tUpdate entity \"{} {}\": new label {}".format(entity.label, entity.marker(), label))
 
 
-def video_detection(arguments, video_queue, output_file):
+def video_detection(arguments, video_queue, output_file, width, height):
     set_gpu(arguments.gpu)
     detector = bach.detector.Detector(arguments.config_path, arguments.meta_path, arguments.weights_path)
     return_code = detector.initialize()
     if not return_code:
         print("Impossible to initialize darknet.")
         exit(-1)
+    detector_width = network_width(detector.network)
+    detector_height = network_height(detector.network)
     video_output = None
     if arguments.video_output:
         video_output = initialize_output(arguments.video_output, arguments.width, arguments.height, arguments.fps)
@@ -153,16 +165,29 @@ def video_detection(arguments, video_queue, output_file):
             break
         if arguments.debug:
             print("# Frame: {}".format(frame_counter))
+        # Darknet detector
         detections = detector.detect_objects(frame, threshold=arguments.threshold)
         if arguments.debug:
             print("# Darknet detections: {}".format(len(detections)))
-        # Detect entities
-        detect_entities(arguments, entities, detections, frame_counter)
+        # Update previously detected entities
+        detect_entities(arguments, entities, detections, frame_counter, detector_width, width, detector_height, height)
         # New entities
         for detection in detections:
-            entity = bach.entities.Entity(label=detection[0], color=detector.colors[detection[0]],
-                                          width=detection[2][2], height=detection[2][3], seen=frame_counter)
-            entity.box = bach.geometry.Rectangle(bach.geometry.Point(detection[2][0], detection[2][1]),
+            entity = bach.entities.Entity(label=detection[0],
+                                          color=detector.colors[detection[0]],
+                                          width=bach.geometry.scale(detection[2][2],
+                                                                    detector_width,
+                                                                    width),
+                                          height=bach.geometry.scale(detection[2][3],
+                                                                     detector_height,
+                                                                     height),
+                                          seen=frame_counter)
+            entity.box = bach.geometry.Rectangle(bach.geometry.Point(bach.geometry.scale(detection[2][0],
+                                                                                         detector_width,
+                                                                                         width),
+                                                                     bach.geometry.scale(detection[2][1],
+                                                                                         detector_height,
+                                                                                         height)),
                                                  entity.width,
                                                  entity.height)
             entities.append(entity)
@@ -222,10 +247,11 @@ def __main__():
     output_file = open(arguments.output_file, "w")
     output_file.write("# {}\n".format(time.strftime("%Y/%m/%d %H:%M:%S")))
     output_file.write("# frame id x y width height\n")
+    output_file.flush()
     frame_queue = queue.Queue(maxsize=arguments.buffer)
     video_reader = bach.video.VideoReader(video, frame_queue, arguments.timeout)
     video_reader.start()
-    video_detection(arguments, frame_queue, output_file)
+    Thread(video_detection(arguments, frame_queue, output_file, video.width, video.height)).start()
     if video.ready():
         video_reader.terminate = True
     video_reader.join()
