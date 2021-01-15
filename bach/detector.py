@@ -1,6 +1,5 @@
 import cv2
 from cv2 import aruco
-import numpy
 from bach import darknet
 import bach.geometry
 
@@ -14,6 +13,11 @@ class Detector:
         self.meta_file = meta
         self.weights_file = weights
         self.colors = dict()
+        # Darknet
+        self.network = None
+        self.classes = None
+        self.colors = None
+        # ArUCO
         self.aruco_dictionary = None
         self.aruco_parameters = None
 
@@ -23,19 +27,11 @@ class Detector:
         """
         # Initialize Darknet
         if self.configuration_file and self.weights_file:
-            darknet.performDetect(imagePath="",
-                                  configPath=self.configuration_file,
-                                  weightPath=self.weights_file,
-                                  metaPath=self.meta_file,
-                                  showImage=False,
-                                  initOnly=True)
+            self.network, self.classes, self.colors = darknet.load_network(self.configuration_file,
+                                                                           self.meta_file,
+                                                                           self.weights_file)
         else:
             return False
-        for name in darknet.altNames:
-            # The color is in BGR format
-            self.colors[name] = (numpy.random.randint(0, 255),
-                                 numpy.random.randint(0, 255),
-                                 numpy.random.randint(0, 255))
         # Initialize ArUco
         self.aruco_dictionary = aruco.Dictionary_get(aruco.DICT_4X4_50)
         self.aruco_parameters = aruco.DetectorParameters_create()
@@ -51,28 +47,30 @@ class Detector:
         self.aruco_parameters.detectInvertedMarker = False
         return True
 
-    @staticmethod
-    def preprocess_frame(frame):
+    def preprocess_frame(self, frame):
         """
         Preprocess a frame before detection.
         """
         processed_frame = frame.copy()
         processed_frame = cv2.resize(processed_frame,
-                                     (darknet.lib.network_width(darknet.netMain),
-                                      darknet.lib.network_height(darknet.netMain)),
+                                     (darknet.lib.network_width(self.network),
+                                      darknet.lib.network_height(self.network)),
                                      interpolation=cv2.INTER_NEAREST)
         return processed_frame
 
-    @staticmethod
-    def detect_objects(frame, threshold=0.5):
+    def detect_objects(self, frame, threshold=0.5):
         """
         Process a frame through the neural network and return detected objects.
         """
-        detections = darknet.detect(darknet.netMain,
-                                    darknet.metaMain,
-                                    frame,
-                                    threshold,
-                                    threshold)
+        processed_image = darknet.make_image(darknet.network_width(self.network),
+                                             darknet.network_height(self.network),
+                                             3)
+        darknet.copy_image_from_bytes(processed_image, frame.tobytes())
+        detections = darknet.detect_image(self.network,
+                                          self.classes,
+                                          processed_image,
+                                          thresh=threshold,
+                                          hier_thresh=threshold)
         return detections
 
     def detect_markers(self, frame):
